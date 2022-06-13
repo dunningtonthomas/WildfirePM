@@ -1,6 +1,7 @@
 close all; clear; clc;
 %%To do: Import Data from xls file, import first column as string and then
 %%convert to datetime
+% Use the delimited text import options to split the data up
 
 %% Import Data
 
