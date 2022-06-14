@@ -1,49 +1,58 @@
 close all; clear; clc;
+%%To do: Import Data from xls file, import first column as string and then
+%%convert to datetime
+% Use the delimited text import options to split the data up
 
 %% Import Data
 
 path = '../dataFiles/aranet4Prelim'; %Directory for data files
 cd(path);
 
-data = xlsread('10200_2022-06-13T13_30_07-0600.csv'); %Read in data
+%Defining the variable names and their corresponding columns
+opts = delimitedTextImportOptions('NumVariables', 5);
+opts.VariableNames(1) = {'Time'};
+opts.VariableNames(2) = {'Carbon Dioxide (ppm)'};
+opts.VariableNames(3) = {'Temperature (C)'};
+opts.VariableNames(4) = {'Relative Humidity (%)'};
+opts.VariableNames(5) = {'Atmospheric Pressure (hPa)'};
 
-%Column 1 is carbon dioxide (ppm)
-%Column 2 is temperature (C)
-%Column 3 is Relative Humidity (%)
-%Column 4 is Atmosphereic Pressure (hPa)
+files = dir('*.csv'); %Struct containing all of the csv files in the directory
 
-%Getting the time data from the csv file
-fid = fopen('10200_2022-06-13T13_30_07-0600.csv');
-x = textscan(fid, '%s%s%s%s%s');
+for i = 1:length(files)
+    
+    data = readmatrix(files(i).name, opts); %Read in data
 
-%% Analysis
+    %% Analysis
+    time = data(2:end, 1);
+    carbonD = data(2:end,2);
+    temperature = data(2:end,3);
+    humid = data(2:end,4);
+    atmosPress = data(2:end,5);
 
-carbonD = data(:,1);
-temp = data(:,2);
-humid = data(:,3);
-atmosPress = data(:,4);
+    %Creating time data for the inputted times
+    timeData = datetime(time); %Getting rid of the first data point for callibration
 
+    %Converting to doubles
+    carbonDFinal = zeros(length(carbonD), 1);
+    for j = 1:length(carbonD)
+        temp = str2double(cell2mat(carbonD(j)));
+        carbonDFinal(j) = temp;        
+    end
+    
+    %Concatenate to get rid of initial calibration spikes
+    carbonDFinal = carbonDFinal(10:end-1);
+    timeData = timeData(10:end);
 
-timeCell = x{1,2};
-dateCell = x{1,1};
-timeCell = timeCell(2:end);
-dateCell = dateCell(2:end);
-
-%Need to add 12 to pm values
-pmValues = x{1,3};
-pmValues = pmValues(2:end);
-logVec
-
-totalCellMat = cell(length(timeCell),1);
-for j = 1:length(timeCell) %Concatenating strings into one cell array
-    str1 = char(dateCell(j));
-    str2 = char(timeCell(j));
-    strings = [str1, ' ', str2];
-    totalCellMat{j} = strings;    
+    %% Plotting
+    plot(timeData, carbonDFinal);
+    hold on    
 end
 
-timeData = datetime(totalCellMat, 'InputFormat', 'dd/MM/yyyy HH:mm:ss');
+title('Carbon Dioxide Concentrations');
+ylabel('Carbon Dioxide (ppm)');
+xlabel('Time');
 
-%% Plotting
-figure();
-plot(timeData, carbonD);
+%% Clean Up
+%Changing directory back
+pathBack = '../../MATLABFiles';
+cd(pathBack);
