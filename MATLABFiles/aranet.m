@@ -57,6 +57,10 @@ title('Carbon Dioxide Concentrations');
 ylabel('Carbon Dioxide (ppm)');
 xlabel('Time');
 
+%Changing directory back
+pathBack = '../../MATLABFiles';
+cd(pathBack);
+
 %% Further Analysis
 %Concatenating all carbon data for average calculations
 %Determining the smallest data set
@@ -68,6 +72,7 @@ for i = 1:length(carbonDataTot)
        fid = i;
     end
 end
+
 logVec = ones(tempSize, 1) == 1; %Logical vector to index into arrays and concatenate
 
 for i = 1:length(carbonDataTot) %Concatenating lengths of the arrays
@@ -92,14 +97,35 @@ for i = 1:numDataPoints %Looping through length of the concatenated data vectors
    meanCarbon(i) = sum / numSensors;
 end
 
+%Standard Deviation Calculation
+rawCarbon2D = zeros(numDataPoints, numSensors);
+
+for i = 1:length(carbonDataTot)
+   rawCarbon2D(:,i) = carbonDataTot{i};    
+end
+
+standDev = std(rawCarbon2D, 0, 2);
+curveLow = meanCarbon - standDev;
+curveHigh = meanCarbon + standDev;
+
+
 %% Plotting
+
+%Smoothing data
+plotCarbon = smoothdata(meanCarbon);
+curveLow = plotCarbon - standDev;
+curveHigh = plotCarbon + standDev;
 
 %Plot for the mean of the carbon data
 plotTime = datetime(timeDataTot{1});
 figure();
-plot(plotTime, meanCarbon); 
+plot(plotTime, plotCarbon, 'r'); 
+hold on
+
+cd('XKCD_RGB');
+h2 = fill([plotTime; flip(plotTime)], [curveHigh; flip(curveLow)], rgb('light pink'), 'HandleVisibility', 'off');
+set(h2,'facealpha',.5) %Makes the shading see-though
+h2.LineStyle = 'none'; %Turn off outline
 
 %% Clean Up
-%Changing directory back
-pathBack = '../../MATLABFiles';
-cd(pathBack);
+cd('../');
