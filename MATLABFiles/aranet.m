@@ -80,13 +80,16 @@ end
 %sets time to plot and the averages are not lined up perfectly
 %Maybe I can interpolate later?
 
-meanCarbon = zeros(length(carbonDataTot{1}), 1); %Vector to store average values
-for i = 1:length(carbonDataTot{1}) %Looping through length of the concatenated data vectors
+numDataPoints = length(carbonDataTot{1});
+numSensors = length(carbonDataTot);
+
+meanCarbon = zeros(numDataPoints, 1); %Vector to store average values
+for i = 1:numDataPoints %Looping through length of the concatenated data vectors
     sum = 0;
-   for j = 1:length(carbonDataTot) %Looping through each sensor
+   for j = 1:numSensors %Looping through each sensor
        sum = sum + carbonDataTot{j}(i);       
    end
-   meanCarbon(i) = sum / length(carbonDataTot{1});
+   meanCarbon(i) = sum / numSensors;
 end
 
 %% Plotting
