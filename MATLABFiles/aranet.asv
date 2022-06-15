@@ -122,16 +122,40 @@ curveLow = plotCarbon - standDev;
 curveHigh = plotCarbon + standDev;
 
 %Plot for the mean of the carbon data
+cd('XKCD_RGB');
 plotTime = datetime(timeDataTot{1});
 figure();
-plot(plotTime, plotCarbon, 'r', 'linewidth', 2); 
 hold on
 
+%Plotting +-3% as provided by the manufacturer error
+threeUpper = 1.03 * plotCarbon;
+threeLower = 0.97 * plotCarbon;
+h3 = fill([plotTime; flip(plotTime)], [threeUpper; flip(threeLower)], rgb('light pink'), 'HandleVisibility', 'off');
+set(h3,'facealpha',1) %Makes the shading see-though
+h3.LineStyle = 'none'; %Turn off outline
+
 %Plotting the standard deviation of the data
-cd('XKCD_RGB');
-h2 = fill([plotTime; flip(plotTime)], [curveHigh; flip(curveLow)], rgb('light blue'), 'HandleVisibility', 'off');
-set(h2,'facealpha',.5) %Makes the shading see-though
+h2 = fill([plotTime; flip(plotTime)], [curveHigh; flip(curveLow)], rgb('gray'), 'HandleVisibility', 'off');
+set(h2,'facealpha',1) %Makes the shading see-though
 h2.LineStyle = 'none'; %Turn off outline
+
+%Average Plot
+plot(plotTime, plotCarbon, 'color', rgb('black'), 'linewidth', 0.5); 
+
+%Figure info
+title('Standard Deviation and Reported Accuracy Region');
+ylabel('Carbon Dioxide (ppm)');
+xlabel('Date');
+[~,h_legend] = legend('test', 'test1');
+PatchInLegend = findobj(h_legend, 'type', 'patch');
+ set(PatchInLegend(1), 'FaceAlpha', 0.2);
+ set(PatchInLegend(2), 'FaceAlpha', 0.4);
+
+%Plotting individual sensors on top of average and error range
+plotTime = datetime(timeDataTot{1});
+figure();
+plot(plotTime, plotCarbon, 'color', rgb('black'), 'linewidth', 2); 
+hold on
 
 %Plotting +-3% as provided by the manufacturer error
 threeUpper = 1.03 * plotCarbon;
@@ -140,13 +164,20 @@ h3 = fill([plotTime; flip(plotTime)], [threeUpper; flip(threeLower)], rgb('light
 set(h3,'facealpha',.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
-%Figure info
-title('Carbon Dioxide Concentration Average');
+%Color options
+colors = {'bright blue'; 'orange'; 'mustard'; 'grass green'; 'strawberry'; 'violet'; 'aqua blue'; 'deep pink'; 'dark brown'; 'dark teal'; 'muted purple'; 'royal'; 'fawn'}; 
+for i = 1:length(carbonDataTot)
+    timeTemp = timeDataTot{i};
+    carbonTemp = carbonDataTot{i};
+    plot(datetime(timeTemp), smoothdata(carbonTemp), 'linewidth', 0.05, 'color', rgb(colors{i}));
+end
+
+%Labeling
+title('Individual Sensor Variation');
 ylabel('Carbon Dioxide (ppm)');
-xlabel('Time');
+xlabel('Date');
+legend('Mean', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'A10', 'A11', 'A12', 'A13');
 
-
-%Plotting individual sensors
 
 %% Clean Up
 cd('../');

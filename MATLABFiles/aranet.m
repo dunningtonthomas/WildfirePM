@@ -130,23 +130,25 @@ hold on
 %Plotting +-3% as provided by the manufacturer error
 threeUpper = 1.03 * plotCarbon;
 threeLower = 0.97 * plotCarbon;
-h3 = fill([plotTime; flip(plotTime)], [threeUpper; flip(threeLower)], rgb('light red'), 'HandleVisibility', 'off');
-set(h3,'facealpha',.5) %Makes the shading see-though
+h3 = fill([plotTime; flip(plotTime)], [threeUpper; flip(threeLower)], rgb('light pink'), 'HandleVisibility', 'off');
+set(h3,'facealpha',1) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
 %Plotting the standard deviation of the data
 h2 = fill([plotTime; flip(plotTime)], [curveHigh; flip(curveLow)], rgb('gray'), 'HandleVisibility', 'off');
-set(h2,'facealpha',.5) %Makes the shading see-though
+set(h2,'facealpha',1) %Makes the shading see-though
 h2.LineStyle = 'none'; %Turn off outline
 
 %Average Plot
-plot(plotTime, plotCarbon, 'color', rgb('black'), 'linewidth', 2); 
+plot(plotTime, plotCarbon, 'color', rgb('black'), 'linewidth', 0.5); 
+
+%Adding patches to get added to legend
 
 %Figure info
-title('Carbon Dioxide Concentration Average');
+title('Standard Deviation and Reported Accuracy Region');
 ylabel('Carbon Dioxide (ppm)');
 xlabel('Date');
-legend('Mean');
+legend('Mean', 'test1');
 
 %Plotting individual sensors on top of average and error range
 plotTime = datetime(timeDataTot{1});
