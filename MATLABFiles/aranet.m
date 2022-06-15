@@ -20,6 +20,10 @@ files = dir('*.csv'); %Struct containing all of the csv files in the directory
 
 carbonDataTot = cell(length(files),1);
 timeDataTot = cell(length(files),1);
+
+figure();
+set(0,'defaulttextinterpreter','latex');
+
 for i = 1:length(files)
     
     data = readmatrix(files(i).name, opts); %Read in data
@@ -118,16 +122,37 @@ curveLow = plotCarbon - standDev;
 curveHigh = plotCarbon + standDev;
 
 %Plot for the mean of the carbon data
+cd('XKCD_RGB');
 plotTime = datetime(timeDataTot{1});
 figure();
-plot(plotTime, plotCarbon, 'r', 'linewidth', 2); 
 hold on
 
+%Plotting +-3% as provided by the manufacturer error
+threeUpper = 1.03 * plotCarbon;
+threeLower = 0.97 * plotCarbon;
+h3 = fill([plotTime; flip(plotTime)], [threeUpper; flip(threeLower)], rgb('light red'), 'HandleVisibility', 'off');
+set(h3,'facealpha',.5) %Makes the shading see-though
+h3.LineStyle = 'none'; %Turn off outline
+
 %Plotting the standard deviation of the data
-cd('XKCD_RGB');
-h2 = fill([plotTime; flip(plotTime)], [curveHigh; flip(curveLow)], rgb('light blue'), 'HandleVisibility', 'off');
+h2 = fill([plotTime; flip(plotTime)], [curveHigh; flip(curveLow)], rgb('gray'), 'HandleVisibility', 'off');
 set(h2,'facealpha',.5) %Makes the shading see-though
 h2.LineStyle = 'none'; %Turn off outline
+
+%Average Plot
+plot(plotTime, plotCarbon, 'color', rgb('black'), 'linewidth', 2); 
+
+%Figure info
+title('Carbon Dioxide Concentration Average');
+ylabel('Carbon Dioxide (ppm)');
+xlabel('Date');
+legend('Mean');
+
+%Plotting individual sensors on top of average and error range
+plotTime = datetime(timeDataTot{1});
+figure();
+plot(plotTime, plotCarbon, 'color', rgb('black'), 'linewidth', 2); 
+hold on
 
 %Plotting +-3% as provided by the manufacturer error
 threeUpper = 1.03 * plotCarbon;
@@ -135,6 +160,20 @@ threeLower = 0.97 * plotCarbon;
 h3 = fill([plotTime; flip(plotTime)], [threeUpper; flip(threeLower)], rgb('light pink'), 'HandleVisibility', 'off');
 set(h3,'facealpha',.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
+
+%Color options
+colors = {'bright blue'; 'orange'; 'mustard'; 'grass green'; 'strawberry'; 'violet'; 'aqua blue'; 'deep pink'; 'dark brown'; 'dark teal'; 'muted purple'; 'royal'; 'fawn'}; 
+for i = 1:length(carbonDataTot)
+    timeTemp = timeDataTot{i};
+    carbonTemp = carbonDataTot{i};
+    plot(datetime(timeTemp), smoothdata(carbonTemp), 'linewidth', 0.05, 'color', rgb(colors{i}));
+end
+
+%Labeling
+title('Individual Sensor Variation');
+ylabel('Carbon Dioxide (ppm)');
+xlabel('Date');
+legend('Mean', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'A10', 'A11', 'A12', 'A13');
 
 
 %% Clean Up
