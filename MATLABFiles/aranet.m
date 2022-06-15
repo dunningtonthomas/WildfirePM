@@ -143,12 +143,17 @@ h2.LineStyle = 'none'; %Turn off outline
 plot(plotTime, plotCarbon, 'color', rgb('black'), 'linewidth', 0.5); 
 
 %Adding patches to get added to legend
+xTemp = [1 1 1 1];
+yTemp = [0 0 0 0];
+patch(xTemp, yTemp, rgb('light pink'));
+patch(xTemp, yTemp, rgb('gray'));
 
 %Figure info
 title('Standard Deviation and Reported Accuracy Region');
 ylabel('Carbon Dioxide (ppm)');
 xlabel('Date');
-legend('Mean', 'test1');
+legend('Mean', '3% Error Region', 'Standard Deviation');
+ylim([320 410]);
 
 %Plotting individual sensors on top of average and error range
 plotTime = datetime(timeDataTot{1});
@@ -163,8 +168,13 @@ h3 = fill([plotTime; flip(plotTime)], [threeUpper; flip(threeLower)], rgb('light
 set(h3,'facealpha',.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
+%Patch for the fill to show up on the legend
+xTemp = [1 1 1 1];
+yTemp = [0 0 0 0];
+patch(xTemp, yTemp, rgb('light pink'));
+
 %Color options
-colors = {'bright blue'; 'orange'; 'mustard'; 'grass green'; 'strawberry'; 'violet'; 'aqua blue'; 'deep pink'; 'dark brown'; 'dark teal'; 'muted purple'; 'royal'; 'fawn'}; 
+colors = {'bright blue'; 'orange'; 'mustard'; 'grass green'; 'strawberry'; 'violet'; 'aqua blue'; 'deep pink'; 'dark brown'; 'dark teal'; 'muted purple'; 'royal'; 'dark green'}; 
 for i = 1:length(carbonDataTot)
     timeTemp = timeDataTot{i};
     carbonTemp = carbonDataTot{i};
@@ -172,10 +182,11 @@ for i = 1:length(carbonDataTot)
 end
 
 %Labeling
+ylim([320 410]);
 title('Individual Sensor Variation');
 ylabel('Carbon Dioxide (ppm)');
 xlabel('Date');
-legend('Mean', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'A10', 'A11', 'A12', 'A13');
+legend('Mean', '3% Error Region', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'A10', 'A11', 'A12', 'A13', 'NumColumns', 4);
 
 
 %% Clean Up
