@@ -113,7 +113,8 @@ curveHigh = meanCarbon + standDev;
 
 %Smoothing data
 plotCarbon = smoothdata(meanCarbon);
-curveL
+curveLow = plotCarbon - standDev;
+curveHigh = plotCarbon + standDev;
 
 %Plot for the mean of the carbon data
 plotTime = datetime(timeDataTot{1});
@@ -121,10 +122,17 @@ figure();
 plot(plotTime, plotCarbon, 'r'); 
 hold on
 
+%Plotting the standard deviation of the data
 cd('XKCD_RGB');
 h2 = fill([plotTime; flip(plotTime)], [curveHigh; flip(curveLow)], rgb('light pink'), 'HandleVisibility', 'off');
 set(h2,'facealpha',.5) %Makes the shading see-though
 h2.LineStyle = 'none'; %Turn off outline
+
+%Plotting +-30ppm and +-3% as provided by the manufacturer error
+thirtyUpper = plotCarbon + 30;
+thurtyLower = plotCarbon - 30;
+plot(plotTime, thirtyUpper);
+plot(plot
 
 %% Clean Up
 cd('../');

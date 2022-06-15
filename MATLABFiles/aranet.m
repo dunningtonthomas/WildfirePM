@@ -53,6 +53,7 @@ for i = 1:length(files)
     hold on    
 end
 
+
 title('Carbon Dioxide Concentrations');
 ylabel('Carbon Dioxide (ppm)');
 xlabel('Time');
@@ -119,13 +120,22 @@ curveHigh = plotCarbon + standDev;
 %Plot for the mean of the carbon data
 plotTime = datetime(timeDataTot{1});
 figure();
-plot(plotTime, plotCarbon, 'r'); 
+plot(plotTime, plotCarbon, 'r', 'linewidth', 2); 
 hold on
 
+%Plotting the standard deviation of the data
 cd('XKCD_RGB');
-h2 = fill([plotTime; flip(plotTime)], [curveHigh; flip(curveLow)], rgb('light pink'), 'HandleVisibility', 'off');
+h2 = fill([plotTime; flip(plotTime)], [curveHigh; flip(curveLow)], rgb('light blue'), 'HandleVisibility', 'off');
 set(h2,'facealpha',.5) %Makes the shading see-though
 h2.LineStyle = 'none'; %Turn off outline
+
+%Plotting +-3% as provided by the manufacturer error
+threeUpper = 1.03 * plotCarbon;
+threeLower = 0.97 * plotCarbon;
+h3 = fill([plotTime; flip(plotTime)], [threeUpper; flip(threeLower)], rgb('light pink'), 'HandleVisibility', 'off');
+set(h3,'facealpha',.5) %Makes the shading see-though
+h3.LineStyle = 'none'; %Turn off outline
+
 
 %% Clean Up
 cd('../');
