@@ -89,19 +89,26 @@ h3 = fill([diametersAPS; flip(diametersAPS)], [apsErrorUpPre; flip(apsErrorLowPr
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
+%Adding patch so I can add fill to the legend
+xTemp = [1 1 1 1];
+yTemp = [0 0 0 0];
+patch(xTemp, yTemp, rgb('light pink'));
+
 set(gca, 'XScale', 'log');
 
-%Plotting dashed lines for psl range
-xline(0.698, '--');
-xline(0.702, '--', 'PSL Error');
+%Plotting dashed lines for psl range, +-10% range
+xline(0.702 - 0.1*0.702, '--', 'color', rgb('blue'));
+xline(0.702 + 0.1*0.702, '--', 'APS Error', 'color', rgb('blue'));
 
-xline(1.98, '--');
-xline(2.02, '--', 'PSL Error');
+%PSL error range
+xline(0.696, '--', 'color', rgb('purple'));
+xline(0.708, '--', 'PSL Error', 'color', rgb('purple'));
 
 xlabel('Dp');
 ylabel('dNdlogDp');
 title('Average Concentrations PRE Potentiometer');
 xlim([0,1]);
+legend('Average', 'Standard Deviation');
 
 %%%%POST POTENTIOMETER
 figure();
@@ -143,5 +150,21 @@ legend('Average', 'Standard Deviation');
 % cd('C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\MATLABFiles\apsCalibrationMAT');
 %Laptop
 cd('C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\WildfirePM\MATLABFiles\apsCalibrationMAT');
+
+
+% bool = 0;
+% for i = 1:length(smps{1,:})
+%     for j = 1:length(time)
+%         if(time(j) == smps{1,i}) %Found the time
+%             bool = 1;            
+%         end        
+%     end
+%     if(~bool) %Not found
+%         badTime = smps{1,i};
+%     end
+%     bool = 0;
+% end
+
+
 
 
