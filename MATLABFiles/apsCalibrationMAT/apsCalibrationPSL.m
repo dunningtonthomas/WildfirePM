@@ -6,10 +6,9 @@ clear; close  all; clc;
 %%APS
 
 %Desktop
-path = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\dataFiles\apsCalibrationPSL';
+% path = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\dataFiles\apsCalibrationPSL';
 %Laptop
-% path = '';
-
+path = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\WildfirePM\dataFiles\apsCalibrationPSL';
 cellArrAPS = importAPS(path);
 
 
@@ -33,28 +32,48 @@ diametersAPS = cellArrAPS{2,1};
 %Average concentrations during time interval
 avgConcAPS = mean([cellArrAPS{3,:}],2);
 
+
+%Getting into matrix
+dataStd = zeros(length(cellArrAPS{3,1}), length(cellArrAPS(3,:)));
+for i = 1:length(cellArrAPS(3,:))
+    dataStd(:,i) = cellArrAPS{3,i};
+end
+
+%Calculating std
+stdConcAPS = std(dataStd, 0, 2);
+
 %Concatenating to less than 3 microns and above the minimum bin
 logVec = diametersAPS < 3 & diametersAPS > 0.523;
 avgConcAPS = avgConcAPS(logVec);
 diametersAPS = diametersAPS(logVec);
+stdConcAPS = stdConcAPS(logVec);
 
 %Error region
 %APS is 10% reported error
-apsErrorLow = avgConcAPS * 0.9;
-apsErrorUp = avgConcAPS * 1.1;
+apsErrorLow = avgConcAPS - stdConcAPS;
+apsErrorUp = avgConcAPS + stdConcAPS;
 
 %% Analysis APS Calibration PRE POTENTIOMETER
 %Average concentrations during time interval
 avgConcAPSPre = mean([cellArrAPSPre{3,:}],2);
 
-
 %Concatenating to less than 3 microns
 avgConcAPSPre = avgConcAPSPre(logVec);
 
+%Getting into matrix
+dataStdPre = zeros(length(cellArrAPSPre{3,1}), length(cellArrAPSPre(3,:)));
+for i = 1:length(cellArrAPSPre(3,:))
+    dataStdPre(:,i) = cellArrAPSPre{3,i};
+end
+
+%Calculating std
+stdConcAPSPre = std(dataStdPre, 0, 2);
+stdConcAPSPre = stdConcAPSPre(logVec);
+
 %Error region
 %APS is 10% reported error
-apsErrorLowPre = avgConcAPSPre * 0.9;
-apsErrorUpPre = avgConcAPSPre * 1.1;
+apsErrorLowPre = avgConcAPSPre - stdConcAPSPre;
+apsErrorUpPre = avgConcAPSPre + stdConcAPSPre;
 
 
 %% Plotting
@@ -82,6 +101,7 @@ xline(2.02, '--', 'PSL Error');
 xlabel('Dp');
 ylabel('dNdlogDp');
 title('Average Concentrations PRE Potentiometer');
+xlim([0,1]);
 
 %%%%POST POTENTIOMETER
 figure();
@@ -95,9 +115,18 @@ h3.LineStyle = 'none'; %Turn off outline
 
 set(gca, 'XScale', 'log');
 
-%Plotting dashed lines for psl range
-xline(0.698, '--');
-xline(0.702, '--', 'PSL Error');
+%Adding patch so I can add fill to the legend
+xTemp = [1 1 1 1];
+yTemp = [0 0 0 0];
+patch(xTemp, yTemp, rgb('light pink'));
+
+%Plotting dashed lines for psl range, +-10% range
+xline(0.702 - 0.1*0.702, '--', 'color', rgb('blue'));
+xline(0.702 + 0.1*0.702, '--', 'APS Error', 'color', rgb('blue'));
+
+%PSL error range
+xline(0.696, '--', 'color', rgb('purple'));
+xline(0.708, '--', 'PSL Error', 'color', rgb('purple'));
 
 xline(1.98, '--');
 xline(2.02, '--', 'PSL Error');
@@ -105,11 +134,14 @@ xline(2.02, '--', 'PSL Error');
 xlabel('Dp');
 ylabel('dNdlogDp');
 title('Average Concentrations POST Potentiometer');
+xlim([0,1]);
+
+legend('Average', 'Standard Deviation');
 
 %% Clean Up
 %Desktop
-cd('C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\MATLABFiles\apsCalibrationMAT');
+% cd('C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\MATLABFiles\apsCalibrationMAT');
 %Laptop
-% cd('C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\WildfirePM\MATLABFiles\apsCalibrationMAT');
+cd('C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\WildfirePM\MATLABFiles\apsCalibrationMAT');
 
 
