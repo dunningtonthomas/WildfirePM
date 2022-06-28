@@ -14,3 +14,11 @@ for i = 1:length(smps(3,:))
      
 end
 
+
+
+logVec = binsizes < 350 & binsizes > ;
+smps{3,1}(logVec)
+
+
+
+
