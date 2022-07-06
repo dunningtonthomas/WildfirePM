@@ -15,6 +15,7 @@ apsData = importAPS(pathAPS);
 apsDataRaw = apsData;
 
 %% Analysis
+
 %Converting mass concentrations to micro grams per meter cubed and
 %truncating APS to less than 2.5 microns ans SMPS to less than 0.523
 %microns
@@ -38,61 +39,160 @@ for i = 1:numScans
     smpsData{4,i} = sum(smpsData{3,i});    
 end
 
+%Computing Average if there are more than 1 scans (3 scans in our case)
+scanIndices = [33, 26, 27]; %The number of scans for each file SCAN1 SCAN2 SCAN3 respectively
+smpsScan1 = smpsData(:,1:33);
+smpsScan2 = smpsData(:,34:59);
+smpsScan3 = smpsData(:,60:86);
+
+apsScan1 = apsData(:,1:33);
+apsScan2 = apsData(:,34:59);
+apsScan3 = apsData(:,60:86);
+
+%Truncating the scans based on start/stop times
+scan1Start = datetime(2022, 07, 05, 13, 20, 00);
+scan1End = datetime(2022, 07, 05, 14, 30, 00);
+
+scan2Start = datetime(2022, 07, 05, 15, 00, 00);
+scan2End = datetime(2022, 07, 05, 16, 03, 00);
+
+scan3Start = datetime(2022, 07, 05, 16, 30, 00);
+scan3End = datetime(2022, 07, 05, 17, 33, 00);
+
+tempLog = isbetween([smpsScan1{1,:}], scan1Start, scan1End);
+smpsScan1 = smpsScan1(:,tempLog);
+apsScan1 = apsScan1(:,tempLog);
+
+tempLog = isbetween([smpsScan2{1,:}], scan2Start, scan2End);
+smpsScan2 = smpsScan2(:,tempLog);
+apsScan2 = apsScan2(:,tempLog);
+
+tempLog = isbetween([smpsScan3{1,:}], scan3Start, scan3End);
+smpsScan3 = smpsScan3(:,tempLog);
+apsScan3 = apsScan3(:,tempLog);
+
+%If some scans ran longer than others, truncate so they are all the
+%smallest length
+minsize = min([length(smpsScan1(1,:)), length(smpsScan2(1,:)), length(smpsScan3(1,:))]);
+smpsScan1 = smpsScan1(:,1:minsize);
+smpsScan2 = smpsScan2(:,1:minsize);
+smpsScan3 = smpsScan3(:,1:minsize);
+
+apsScan1 = apsScan1(:,1:minsize);
+apsScan2 = apsScan2(:,1:minsize);
+apsScan3 = apsScan3(:,1:minsize);
+
+%TOTAL SCANS ANALYSIS
 %Total mass concentrations over time
-smpsTime = [smpsData{1,:}];
-smpsTotalConc = [smpsData{4,:}];
+totalConc1 = [smpsScan1{4,:}] + [apsScan1{4,:}];
+totalConc2 = [smpsScan2{4,:}] + [apsScan2{4,:}];
+totalConc3 = [smpsScan3{4,:}] + [apsScan3{4,:}];
 
-apsTime = [apsData{1,:}];
-apsTotalConc = [apsData{4,:}];
+%Truncating so they start at the peak and include only decay
+%Truncating all plots so they start at the peak
+[~,ind1] = max(totalConc1);
+totalConc1 = totalConc1(ind1:end);
+[~,ind2] = max(totalConc2);
+totalConc2 = totalConc2(ind2:end);
+[~,ind3] = max(totalConc3);
+totalConc3 = totalConc3(ind3:end);
 
-totalConc = apsTotalConc + smpsTotalConc;
+%Creating plot time based on the length of each trial
+plotTime = [smpsScan1{1,:}]; %Time used to plot
+durationArr = minutes(plotTime(ind1:end) - plotTime(1)); %All plots are on 1 hour scale
+durationArr = durationArr - durationArr(1); %Start at t=0 mins
 
 %Variables for percent plot
-peakConc = max(totalConc);
-concPercent = totalConc / peakConc;
+peakConc1 = max(totalConc1);
+peakConc2 = max(totalConc2);
+peakConc3 = max(totalConc3);
+concPercent1 = totalConc1 / peakConc1;
+concPercent2 = totalConc2 / peakConc2;
+concPercent3 = totalConc3 / peakConc3;
 
-%Size Distribution Analysis
-[~, maxInd] = max(totalConc); %Peak Concentration
-smpsPeakBins = smpsData{2, maxInd} / 1000; %Converting to microns
-smpsPeakDist = smpsData{3, maxInd};
-apsPeakBins = apsData{2, maxInd};
-apsPeakDist = apsData{3, maxInd};
+%Logarithmic Transform
+logConc1 = log(totalConc1);
+logConc2 = log(totalConc2);
+logConc3 = log(totalConc3);
 
-%% Plotting 
-start_time = datetime(2022, 07, 05, 13, 20, 00); %nebulizer on
-stop_time = datetime(2022, 07, 05, 14, 30, 00); %End of collection
+%Calculating the slopes for the log transformed decay curves
+%Creating linear fit curves
+coeff1 = polyfit(durationArr, logConc1, 1);
+coeff2 = polyfit(durationArr, logConc2, 1);
+coeff3 = polyfit(durationArr, logConc3, 1);
+
+%Corresponding slopes
+decaySlope1 = coeff1(1);
+decaySlope2 = coeff2(1);
+decaySlope3 = coeff3(1);
+
+%Testing log transform on the percent remaning rather than the total
+%concentrations
+logFrac1 = log(concPercent1);
+logFrac2 = log(concPercent2);
+logFrac3 = log(concPercent3);
+
+%Calculating the slopes for the log transformed decay curves
+%Creating linear fit curves
+coeffFrac1 = polyfit(durationArr, logFrac1, 1);
+coeffFrac2 = polyfit(durationArr, logFrac2, 1);
+coeffFrac3 = polyfit(durationArr, logFrac3, 1);
+
+%Corresponding slopes
+decaySlopeFrac1 = coeffFrac1(1);
+decaySlopeFrac2 = coeffFrac2(1);
+decaySlopeFrac3 = coeffFrac3(1);
+
+
+%% Plotting
 
 %Total concentration plot
 figure();
 set(0, 'defaulttextinterpreter', 'latex');
-plot(smpsTime, totalConc, 'linewidth', 2, 'color', rgb('light red'));
+plot(durationArr, totalConc1, 'linewidth', 2, 'color', rgb('light red'));
 hold on
+plot(durationArr, totalConc2, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArr, totalConc3, 'linewidth', 2, 'color', rgb('light green'));
 
-%xlim([start_time stop_time]);
-xlabel('Time')
+xlabel('Time (min)')
 ylabel('$$PM_{2.5}$$ Mass Concentration $$\frac{\mu g}{m^{3}}$$');
 title('Total Mass Concentrations');
+legend('Trial 1', 'Trial 2', 'Trial 3');
 
 %Percentage plot
 figure();
-plot(smpsTime, concPercent, 'linewidth', 2, 'color', rgb('light blue'));
-
-%xlim([start_time stop_time]);
-ylim([0 1])
-xlabel('Time')
-ylabel('$$PM_{2.5}$$ Percent');
-title('Percent Remaining');
-
-%Size Distribution Plot
-figure();
-plot(smpsPeakBins, smpsPeakDist, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArr, concPercent1, 'linewidth', 2, 'color', rgb('light red'));
 hold on
-plot(apsPeakBins, apsPeakDist, 'linewidth', 2, 'color', rgb('light green'));
-set(gca, 'XScale' , 'log');
+plot(durationArr, concPercent2, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArr, concPercent3, 'linewidth', 2, 'color', rgb('light green'));
 
-legend('SMPS', 'APS', 'location', 'NW');
-xlabel('Size Bins $$(\mu m)$$')
-ylabel('$$PM_{2.5}$$ Mass Concentration $$\frac{\mu g}{m^{3}}$$');
-title('Size Distribution');
+ylim([0 1])
+xlabel('Time (min)')
+ylabel('$$PM_{2.5}$$ Fraction $$(\frac{PM_{2.5}}{PM_{2.5_{0}}})$$');
+title('Fraction Remaining');
+legend('Trial 1', 'Trial 2', 'Trial 3');
 
-%% Final Clean
+
+%Log Scale Plot Concentration
+figure();
+plot(durationArr, logConc1, 'linewidth', 2, 'color', rgb('light red'));
+hold on
+plot(durationArr, logConc2, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArr, logConc3, 'linewidth', 2, 'color', rgb('light green'));
+
+xlabel('Time (min)')
+ylabel('$$PM_{2.5}$$ Logarithmic Mass Concentration $$\ln (\frac{\mu g}{m^{3}})$$');
+title('Natural Log Transform of Mass Concentration');
+legend('Trial 1', 'Trial 2', 'Trial 3');
+
+%Log Scale Plot Fractional
+figure();
+plot(durationArr, logFrac1, 'linewidth', 2, 'color', rgb('light red'));
+hold on
+plot(durationArr, logFrac2, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArr, logFrac3, 'linewidth', 2, 'color', rgb('light green'));
+
+xlabel('Time (min)')
+ylabel('$$PM_{2.5}$$ Logarithmic Fraction Remaining $$\ln (\frac{PM_{2.5}}{PM_{2.5_{0}}})$$');
+title('Natural Log Transform of First Order Decay');
+legend('Trial 1', 'Trial 2', 'Trial 3');
