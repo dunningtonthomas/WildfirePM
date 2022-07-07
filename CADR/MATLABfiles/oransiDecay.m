@@ -117,9 +117,11 @@ logConc3 = log(totalConc3);
 
 %Calculating the slopes for the log transformed decay curves
 %Creating linear fit curves
-coeff1 = polyfit(durationArr, logConc1, 1);
-coeff2 = polyfit(durationArr, logConc2, 1);
-coeff3 = polyfit(durationArr, logConc3, 1);
+%Truncating to 30 minutes or less, very small concentrations after 30 mins
+logFit = durationArr <= 30;
+coeff1 = polyfit(durationArr(logFit), logConc1(logFit), 1);
+coeff2 = polyfit(durationArr(logFit), logConc2(logFit), 1);
+coeff3 = polyfit(durationArr(logFit), logConc3(logFit), 1);
 
 %Corresponding slopes
 decaySlope1 = coeff1(1);
@@ -134,9 +136,9 @@ logFrac3 = log(concPercent3);
 
 %Calculating the slopes for the log transformed decay curves
 %Creating linear fit curves
-coeffFrac1 = polyfit(durationArr, logFrac1, 1);
-coeffFrac2 = polyfit(durationArr, logFrac2, 1);
-coeffFrac3 = polyfit(durationArr, logFrac3, 1);
+coeffFrac1 = polyfit(durationArr(logFit), logFrac1(logFit), 1);
+coeffFrac2 = polyfit(durationArr(logFit), logFrac2(logFit), 1);
+coeffFrac3 = polyfit(durationArr(logFit), logFrac3(logFit), 1);
 
 %Corresponding slopes
 decaySlopeFrac1 = coeffFrac1(1);
@@ -155,6 +157,8 @@ averageConcLogORA = (logConc1 + logConc2 + logConc3) / 3;
 averageFracLogORA = (logFrac1 + logFrac2 + logFrac3) / 3;
 stdConcLogORA = std([logConc1', logConc2', logConc3'], 0, 2);
 stdFracLogORA = std([logFrac1', logFrac2', logFrac3'], 0, 2);
+
+durationArrORA = durationArr;
 
 save('Oransi', 'averageConcORA', 'averageFracORA', 'stdConcORA', 'stdFracORA', 'averageConcLogORA', 'averageFracLogORA', 'stdConcLogORA', 'stdFracLogORA', 'durationArrORA');
 
