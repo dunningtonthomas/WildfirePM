@@ -143,20 +143,26 @@ decaySlopeFrac1 = coeffFrac1(1);
 decaySlopeFrac2 = coeffFrac2(1);
 decaySlopeFrac3 = coeffFrac3(1);
 
+%Average Slopes
+averageDecayConst = mean([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
+
+%Standard Deviation of the slopes
+stdDecayConstBackground = std([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
+
 
 %Calculating the averages to export and use in total comparison for both
 %mass and fractional concentrations for both normal and log scale
 averageConc = (totalConc1 + totalConc2 + totalConc3) / 3;
 averageFrac = (concPercent1 + concPercent2 + concPercent3) / 3;
-stdConc = std([totalConc1', totalConc2', totalConc3'], 0, 2);
-stdFrac = std([concPercent1', concPercent2', concPercent3'], 0, 2);
+stdConc = (std([totalConc1', totalConc2', totalConc3'], 0, 2))';
+stdFrac = (std([concPercent1', concPercent2', concPercent3'], 0, 2))';
 
 averageConcLog = (logConc1 + logConc2 + logConc3) / 3;
 averageFracLog = (logFrac1 + logFrac2 + logFrac3) / 3;
-stdConcLog = std([logConc1', logConc2', logConc3'], 0, 2);
-stdFracLog = std([logFrac1', logFrac2', logFrac3'], 0, 2);
+stdConcLog = (std([logConc1', logConc2', logConc3'], 0, 2))';
+stdFracLog = (std([logFrac1', logFrac2', logFrac3'], 0, 2))';
 
-save('Background', 'averageConc', 'averageFrac', 'stdConc', 'stdFrac', 'averageConcLog', 'averageFracLog', 'stdConcLog', 'stdFracLog', 'durationArr');
+save('Background', 'averageConc', 'averageFrac', 'stdConc', 'stdFrac', 'averageConcLog', 'averageFracLog', 'stdConcLog', 'stdFracLog', 'durationArr','stdDecayConstBackground');
 
 %% Plotting
 

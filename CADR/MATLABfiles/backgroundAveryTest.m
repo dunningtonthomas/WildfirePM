@@ -197,7 +197,12 @@ averageFracLog = (logFrac1 + logFrac2 + logFrac3 + logFrac4) / 3;
 stdConcLog = std([logConc1', logConc2', logConc3', logConc4'], 0, 2);
 stdFracLog = std([logFrac1', logFrac2', logFrac3', logFrac4'], 0, 2);
 
-%save('Background', 'averageConc', 'averageFrac', 'stdConc', 'stdFrac', 'averageConcLog', 'averageFracLog', 'stdConcLog', 'stdFracLog', 'durationArr');
+averyConc = totalConc4;
+averyFrac = concPercent4;
+averyConcLog = logConc4;
+averyFracLog = logFrac4;
+
+save('BackgroundAvery', 'averyConc', 'averyFrac', 'averyConcLog', 'averyFracLog');
 
 
 %% Raw Avery Trial Analysis

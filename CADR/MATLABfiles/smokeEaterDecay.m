@@ -142,20 +142,26 @@ decaySlopeFrac1 = coeffFrac1(1);
 decaySlopeFrac2 = coeffFrac2(1);
 decaySlopeFrac3 = coeffFrac3(1);
 
+%Average Slopes
+averageDecayConstSE = mean([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
+
+%Standard Deviation of the slopes
+stdDecayConstSE = std([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
+
 
 %Calculating the averages to export and use in total comparison for both
 %mass and fractional concentrations for both normal and log scale
 averageConcSE = (totalConc1 + totalConc2 + totalConc3) / 3;
 averageFracSE = (concPercent1 + concPercent2 + concPercent3) / 3;
-stdConcSE = std([totalConc1', totalConc2', totalConc3'], 0, 2);
-stdFracSE = std([concPercent1', concPercent2', concPercent3'], 0, 2);
+stdConcSE = (std([totalConc1', totalConc2', totalConc3'], 0, 2))';
+stdFracSE = (std([concPercent1', concPercent2', concPercent3'], 0, 2))';
 
 averageConcLogSE = (logConc1 + logConc2 + logConc3) / 3;
 averageFracLogSE = (logFrac1 + logFrac2 + logFrac3) / 3;
-stdConcLogSE = std([logConc1', logConc2', logConc3'], 0, 2);
-stdFracLogSE = std([logFrac1', logFrac2', logFrac3'], 0, 2);
+stdConcLogSE = (std([logConc1', logConc2', logConc3'], 0, 2))';
+stdFracLogSE = (std([logFrac1', logFrac2', logFrac3'], 0, 2))';
 
-save('SmokeEater', 'averageConcSE', 'averageFracSE', 'stdConcSE', 'stdFracSE', 'averageConcLogSE', 'averageFracLogSE', 'stdConcLogSE', 'stdFracLogSE', 'durationArrSE');
+save('SmokeEater', 'averageConcSE', 'averageFracSE', 'stdConcSE', 'stdFracSE', 'averageConcLogSE', 'averageFracLogSE', 'stdConcLogSE', 'stdFracLogSE', 'durationArrSE', 'stdDecayConstSE');
 
 %% Plotting
 
