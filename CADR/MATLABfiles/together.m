@@ -7,6 +7,7 @@ load('Background.mat'); %Background trials
 load('SmokeEater.mat'); %Smoke Eater Trials
 load('Oransi.mat');
 load('AveryThomas.mat');
+load('Oreck.mat');
 
 %% Analysis
 %Clean Air Delivery Rate Analysis
@@ -26,6 +27,10 @@ SELow = averageFracSE - stdFracSE;
 ORAUp = averageFracORA + stdFracORA;
 ORALow = averageFracORA - stdFracORA;
 
+oreckUp = averageFracOreck + stdFracOreck;
+oreckLow = averageFracOreck - stdFracOreck;
+
+%Log std
 backgroundUpLog = averageFracLog + stdFracLog;
 backgroundLowLog = averageFracLog - stdFracLog;
 
@@ -38,6 +43,9 @@ SELowLog = averageFracLogSE - stdFracLogSE;
 ORAUpLog = averageFracLogORA + stdFracLogORA;
 ORALowLog = averageFracLogORA - stdFracLogORA;
 
+oreckUpLog = averageFracLogOreck + stdFracLogOreck;
+oreckLowLog = averageFracLogOreck - stdFracLogOreck;
+
 %% Plotting
 
 %Fraction Remaining Averages
@@ -46,6 +54,7 @@ plot(durationArr, averageFrac, 'linewidth', 2, 'color', rgb('green'));
 hold on
 plot(durationArrSE, averageFracSE, 'linewidth', 2, 'color', rgb('light blue'));
 plot(durationArrORA, averageFracORA, 'linewidth', 2, 'color', rgb('light purple'));
+plot(durationArrOreck, averageFracOreck, 'linewidth', 2, 'color', rgb('light orange'));
 
 %Plotting the Standard Deviation Background
 h3 = fill([durationArr, flip(durationArr)], [(backgroundUp), flip(backgroundLow)], rgb('tea green'), 'HandleVisibility', 'off');
@@ -62,12 +71,17 @@ h3 = fill([durationArrORA, flip(durationArrORA)], [ORAUp, flip(ORALow)], rgb('li
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
+%Plotting the Standard Deviation Oreck
+h3 = fill([durationArrOreck, flip(durationArrOreck)], [oreckUp, flip(oreckLow)], rgb('light orange'), 'HandleVisibility', 'off');
+set(h3,'facealpha',0.5) %Makes the shading see-though
+h3.LineStyle = 'none'; %Turn off outline
+
 
 ylim([0 1])
 xlabel('Time $$(min)$$')
 ylabel('$$PM_{2.5}$$ Fraction $$(\frac{PM_{2.5}}{PM_{2.5_{0}}})$$');
 title('Fraction Remaining');
-legend('No Intervention', 'Smoke Eater', 'Oransi');
+legend('No Intervention', 'Smoke Eater', 'Oransi', 'Oreck');
 
 
 %Logarithmic fraction remaining plot
@@ -76,6 +90,7 @@ plot(durationArr, averageFracLog, 'linewidth', 2, 'color', rgb('green'));
 hold on
 plot(durationArrSE, averageFracLogSE, 'linewidth', 2, 'color', rgb('light blue'));
 plot(durationArrORA, averageFracLogORA, 'linewidth', 2, 'color', rgb('light purple'));
+plot(durationArrOreck, averageFracLogOreck, 'linewidth', 2, 'color', rgb('light orange'));
 
 %Plotting the Standard Deviation Background
 h3 = fill([durationArr, flip(durationArr)], [(backgroundUpLog), flip(backgroundLowLog)], rgb('tea green'), 'HandleVisibility', 'off');
@@ -92,11 +107,17 @@ h3 = fill([durationArrORA, flip(durationArrORA)], [ORAUpLog, flip(ORALowLog)], r
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
+%Plotting the Standard Deviation Oreck
+h3 = fill([durationArrOreck, flip(durationArrOreck)], [oreckUpLog, flip(oreckLowLog)], rgb('light orange'), 'HandleVisibility', 'off');
+set(h3,'facealpha',0.5) %Makes the shading see-though
+h3.LineStyle = 'none'; %Turn off outline
+
+
 
 xlabel('Time $$(min)$$')
 ylabel('$$PM_{2.5}$$ Logarithmic Fraction Remaining $$\ln (\frac{PM_{2.5}}{PM_{2.5_{0}}})$$');
 title('Natural Log Transform of First Order Decay');
-legend('No Intervention', 'Smoke Eater', 'Oransi');
+legend('No Intervention', 'Smoke Eater', 'Oransi', 'Oreck');
 
 
 %Comparing Control Triplicate to Avery Intervention Fraction Remaining

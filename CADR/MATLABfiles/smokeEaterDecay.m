@@ -120,6 +120,7 @@ coeff1 = polyfit(durationArrSE, logConc1, 1);
 coeff2 = polyfit(durationArrSE, logConc2, 1);
 coeff3 = polyfit(durationArrSE, logConc3, 1);
 
+
 %Corresponding slopes
 decaySlope1 = coeff1(1);
 decaySlope2 = coeff2(1);
