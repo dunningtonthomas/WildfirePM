@@ -49,6 +49,7 @@ oreckLowLog = averageFracLogOreck - stdFracLogOreck;
 %% Plotting
 
 %Fraction Remaining Averages
+set(0, 'defaulttextinterpreter', 'latex');
 figure();
 plot(durationArr, averageFrac, 'linewidth', 2, 'color', rgb('green'));
 hold on
