@@ -40,21 +40,21 @@ for i = 1:numScans
 end
 
 %Computing Average if there are more than 1 scans (3 scans in our case)
-% scanIndices = [33, 26, 27]; %The number of scans for each file SCAN1 SCAN2 SCAN3 respectively
-% smpsScan1 = smpsData(:,1:33);
-% smpsScan2 = smpsData(:,34:59);
-% smpsScan3 = smpsData(:,60:86);
-% 
-% apsScan1 = apsData(:,1:33);
-% apsScan2 = apsData(:,34:59);
-% apsScan3 = apsData(:,60:86);
+scanIndices = [26, 26, 27]; %The number of scans for each file SCAN1 SCAN2 SCAN3 respectively
+smpsScan1 = smpsData(:,1:26);
+smpsScan2 = smpsData(:,27:52);
+smpsScan3 = smpsData(:,53:end);
+
+apsScan1 = apsData(:,1:26);
+apsScan2 = apsData(:,27:52);
+apsScan3 = apsData(:,53:end);
 
 %Truncating the scans based on start/stop times
-scan1Start = datetime(2022, 07, 13, 13, 03, 00);
+scan1Start = datetime(2022, 07, 13, 13, 00, 00);
 
-scan2Start = datetime(2022, 07, 13, 14, 28, 00);
+scan2Start = datetime(2022, 07, 13, 14, 25, 00);
 
-scan3Start = datetime(2022, 07, 13, 13, 03, 00);
+scan3Start = datetime(2022, 07, 13, 15, 55, 00);
 
 tempLog = [smpsScan1{1,:}] >= scan1Start;
 smpsScan1 = smpsScan1(:,tempLog);
@@ -94,10 +94,32 @@ totalConc2 = totalConc2(ind2:end);
 [~,ind3] = max(totalConc3);
 totalConc3 = totalConc3(ind3:end);
 
+%Truncating again to minimum size
+minsize = min([length(totalConc1),length(totalConc2),length(totalConc3)]);
+totalConc1 = totalConc1(1:minsize);
+totalConc2 = totalConc2(1:minsize);
+totalConc3 = totalConc3(1:minsize);
+
 %Creating plot time based on the length of each trial
 plotTime = [smpsScan1{1,:}]; %Time used to plot
 durationArr = minutes(plotTime(ind1:end) - plotTime(1)); %All plots are on 1 hour scale
 durationArr = durationArr - durationArr(1); %Start at t=0 mins
+
+%Truncate duration arr to size of totalConc
+durationArr = durationArr(1:minsize);
+
+%Truncating based on the size of the duration array
+if(length(totalConc1) ~= length(durationArr))
+    totalConc1 = totalConc1(1:length(durationArr));
+end
+
+if(length(totalConc2) ~= length(durationArr))
+    totalConc2 = totalConc2(1:length(durationArr));
+end
+
+if(length(totalConc3) ~= length(durationArr))
+    totalConc3 = totalConc3(1:length(durationArr));
+end
 
 %Variables for percent plot
 peakConc1 = max(totalConc1);

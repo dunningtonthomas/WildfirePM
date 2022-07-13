@@ -43,20 +43,18 @@ end
 scanIndices = [26, 26, 27]; %The number of scans for each file SCAN1 SCAN2 SCAN3 respectively
 smpsScan1 = smpsData(:,1:26);
 smpsScan2 = smpsData(:,27:52);
-% smpsScan3 = smpsData(:,53:end);
-smpsScan3 = smpsScan2;
+smpsScan3 = smpsData(:,53:end);
 
 apsScan1 = apsData(:,1:26);
 apsScan2 = apsData(:,27:52);
-% apsScan3 = apsData(:,53:end);
-apsScan3 = apsScan2;
+apsScan3 = apsData(:,53:end);
 
 %Truncating the scans based on start/stop times
 scan1Start = datetime(2022, 07, 13, 13, 00, 00);
 
 scan2Start = datetime(2022, 07, 13, 14, 25, 00);
 
-scan3Start = datetime(2022, 07, 13, 14, 25, 00);
+scan3Start = datetime(2022, 07, 13, 15, 55, 00);
 
 tempLog = [smpsScan1{1,:}] >= scan1Start;
 smpsScan1 = smpsScan1(:,tempLog);
