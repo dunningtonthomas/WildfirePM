@@ -4,13 +4,13 @@ clear; clc; close all;
 %% Import Data
 
 %SMPS import
-pathSMPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\WildfirePM\CADR\SmokeTests\data\Background\SMPS';
+pathSMPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\WildfirePM\CADR\SmokeTests\data\Background2\SMPS';
 smpsData = importSMPS(pathSMPS);
 smpsDataRaw = smpsData;
 
 
 %APS import
-pathAPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\WildfirePM\CADR\SmokeTests\data\Background\APS'; 
+pathAPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\WildfirePM\CADR\SmokeTests\data\Background2\APS'; 
 apsData = importAPS(pathAPS);
 apsDataRaw = apsData;
 
@@ -40,21 +40,23 @@ for i = 1:numScans
 end
 
 %Computing Average if there are more than 1 scans (3 scans in our case)
-scanIndices = [26, 26, 27]; %The number of scans for each file SCAN1 SCAN2 SCAN3 respectively
-smpsScan1 = smpsData(:,1:26);
-smpsScan2 = smpsData(:,27:52);
-smpsScan3 = smpsData(:,53:end);
+scanIndices = [25, 26, 27]; %The number of scans for each file SCAN1 SCAN2 SCAN3 respectively
+smpsScan1 = smpsData(:,1:25);
+smpsScan2 = smpsData(:,26:end);
+% smpsScan3 = smpsData(:,53:end);
+smpsScan3 = smpsScan1;
 
-apsScan1 = apsData(:,1:26);
-apsScan2 = apsData(:,27:52);
-apsScan3 = apsData(:,53:end);
+apsScan1 = apsData(:,1:25);
+apsScan2 = apsData(:,26:end);
+% apsScan3 = apsData(:,53:end);
+apsScan3 = apsScan1;
 
 %Truncating the scans based on start/stop times
-scan1Start = datetime(2022, 07, 13, 13, 00, 00);
+scan1Start = datetime(2022, 07, 18, 10, 25, 00);
 
-scan2Start = datetime(2022, 07, 13, 14, 25, 00);
+scan2Start = datetime(2022, 07, 18, 10, 25, 00);
 
-scan3Start = datetime(2022, 07, 13, 15, 55, 00);
+scan3Start = datetime(2022, 07, 18, 10, 25, 00);
 
 tempLog = [smpsScan1{1,:}] >= scan1Start;
 smpsScan1 = smpsScan1(:,tempLog);
@@ -196,7 +198,7 @@ averageFracLog = (logFrac1 + logFrac2 + logFrac3) / 3;
 stdConcLog = (std([logConc1', logConc2', logConc3'], 0, 2))';
 stdFracLog = (std([logFrac1', logFrac2', logFrac3'], 0, 2))';
 
-save('Background', 'averageConc', 'averageFrac', 'stdConc', 'stdFrac', 'averageConcLog', 'averageFracLog', 'stdConcLog', 'stdFracLog', 'durationArr','stdDecayConstBackground');
+%save('Background', 'averageConc', 'averageFrac', 'stdConc', 'stdFrac', 'averageConcLog', 'averageFracLog', 'stdConcLog', 'stdFracLog', 'durationArr','stdDecayConstBackground');
 
 %% Plotting
 set(0, 'defaulttextinterpreter', 'latex');

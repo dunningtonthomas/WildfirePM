@@ -1,24 +1,16 @@
-%% Clean Up
-clear; close all; clc;
+%% Clean up
+close all; clear; clc;
 
 
-%% Scratch
+%% Creating sample log transform plot
 
-dateTime = datetime(2022, 06, 28, 14, 04, 30);
-dateTime2 = datetime(2022, 06, 28, 15, 04, 30);
+x = linspace(0,10,100);
+y = 100*exp(-0.5*x);
 
+figure();
+plot(x,y, 'linewidth', 2, 'color', rgb('light purple'))
+set(gca,'XTick',[], 'YTick', [])
 
-corrected = cell(1,length(smps(3,:));
-
-for i = 1:length(smps(3,:))
-     
-end
-
-
-
-logVec = binsizes < 350 & binsizes > ;
-smps{3,1}(logVec)
-
-
-
-
+figure();
+plot(x, log(y), 'linewidth', 2, 'color', rgb('light purple'))
+set(gca,'XTick',[], 'YTick', [])

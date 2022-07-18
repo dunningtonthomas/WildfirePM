@@ -149,6 +149,20 @@ averageDecayConst = mean([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
 %Standard Deviation of the slopes
 stdDecayConstBackground = std([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
 
+%Size Distribution Analysis
+%Finding the peak concentration
+[~, ind] = max(totalConc2);
+
+%Size distribution at the peak
+peakSMPS = smpsScan2{3,ind};
+peakAPS = apsScan2{3,ind};
+binSMPS = smpsScan2{2,ind} ./ 1000;
+binAPS = apsScan2{2,ind};
+
+%Getting rid of the lowest size bin since APS does <0.523
+peakAPS = peakAPS(2:end); 
+binAPS = binAPS(2:end);
+
 
 %Calculating the averages to export and use in total comparison for both
 %mass and fractional concentrations for both normal and log scale
@@ -216,3 +230,15 @@ xlabel('Time (min)')
 ylabel('$$PM_{2.5}$$ Logarithmic Fraction Remaining $$\ln (\frac{PM_{2.5}}{PM_{2.5_{0}}})$$');
 title('Natural Log Transform of First Order Decay');
 legend('Trial 1', 'Trial 2', 'Trial 3');
+
+
+%Size Distribution Plot
+figure();
+plot(binSMPS, peakSMPS, 'linewidth', 2, 'color', rgb('light blue'));
+hold on
+plot(binAPS, peakAPS, 'linewidth', 2, 'color', rgb('light green'));
+
+xlabel('Size Bins $$(\mu m)$$');
+ylabel('$$PM_{2.5}$$ Mass Concentration $$\frac{\mu g}{m^{3}}$$');
+title('Size Distribution');
+legend('SMPS','APS', 'location', 'nw');
