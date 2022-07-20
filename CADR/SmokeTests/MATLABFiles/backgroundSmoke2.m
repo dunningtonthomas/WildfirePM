@@ -40,23 +40,21 @@ for i = 1:numScans
 end
 
 %Computing Average if there are more than 1 scans (3 scans in our case)
-scanIndices = [25, 26, 27]; %The number of scans for each file SCAN1 SCAN2 SCAN3 respectively
+scanIndices = [25, 25, 26]; %The number of scans for each file SCAN1 SCAN2 SCAN3 respectively
 smpsScan1 = smpsData(:,1:25);
-smpsScan2 = smpsData(:,26:end);
-% smpsScan3 = smpsData(:,53:end);
-smpsScan3 = smpsScan1;
+smpsScan2 = smpsData(:,26:50);
+smpsScan3 = smpsData(:,51:end);
 
 apsScan1 = apsData(:,1:25);
-apsScan2 = apsData(:,26:end);
-% apsScan3 = apsData(:,53:end);
-apsScan3 = apsScan1;
+apsScan2 = apsData(:,26:50);
+apsScan3 = apsData(:,51:end);
 
 %Truncating the scans based on start/stop times
-scan1Start = datetime(2022, 07, 18, 10, 25, 00);
+scan1Start = datetime(2022, 07, 18, 13, 15, 00);
 
-scan2Start = datetime(2022, 07, 18, 10, 25, 00);
+scan2Start = datetime(2022, 07, 18, 14, 40, 00);
 
-scan3Start = datetime(2022, 07, 18, 10, 25, 00);
+scan3Start = datetime(2022, 07, 18, 16, 05, 00);
 
 tempLog = [smpsScan1{1,:}] >= scan1Start;
 smpsScan1 = smpsScan1(:,tempLog);
@@ -198,7 +196,7 @@ averageFracLog = (logFrac1 + logFrac2 + logFrac3) / 3;
 stdConcLog = (std([logConc1', logConc2', logConc3'], 0, 2))';
 stdFracLog = (std([logFrac1', logFrac2', logFrac3'], 0, 2))';
 
-%save('Background', 'averageConc', 'averageFrac', 'stdConc', 'stdFrac', 'averageConcLog', 'averageFracLog', 'stdConcLog', 'stdFracLog', 'durationArr','stdDecayConstBackground');
+save('Background', 'averageConc', 'averageFrac', 'stdConc', 'stdFrac', 'averageConcLog', 'averageFracLog', 'stdConcLog', 'stdFracLog', 'durationArr','stdDecayConstBackground');
 
 %% Plotting
 set(0, 'defaulttextinterpreter', 'latex');
