@@ -146,10 +146,10 @@ decaySlopeFrac2 = coeffFrac2(1);
 decaySlopeFrac3 = coeffFrac3(1);
 
 %Average Slopes
-averageDecayConstORA = mean([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
+oraK = mean([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
 
 %Standard Deviation of the slopes
-stdDecayConstORA = std([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
+oraStd = std([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
 
 
 %Calculating the averages to export and use in total comparison for both
@@ -166,7 +166,7 @@ stdFracLogORA = (std([logFrac1', logFrac2', logFrac3'], 0, 2))';
 
 durationArrORA = durationArr;
 
-save('Oransi', 'averageConcORA', 'averageFracORA', 'stdConcORA', 'stdFracORA', 'averageConcLogORA', 'averageFracLogORA', 'stdConcLogORA', 'stdFracLogORA', 'durationArrORA','stdDecayConstORA');
+save('Oransi', 'averageConcORA', 'averageFracORA', 'stdConcORA', 'stdFracORA', 'averageConcLogORA', 'averageFracLogORA', 'stdConcLogORA', 'stdFracLogORA', 'durationArrORA','oraK','oraStd');
 
 %% Plotting
 

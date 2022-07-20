@@ -153,14 +153,14 @@ decaySlope1 = coeff1(1);
 decaySlope2 = coeff2(1);
 decaySlope3 = coeff3(1);
 
-avgDecay = (decaySlope1 + decaySlope2 + decaySlope3) / 3;
-stdDecay = std([decaySlope1, decaySlope2, decaySlope3]);
+oreckK = (decaySlope1 + decaySlope2 + decaySlope3) / 3;
+oreckStd = std([decaySlope1, decaySlope2, decaySlope3]);
 
 %CADR calculations
 backgroundOccupied = 0.0243; %From background analysis
 background = 0.0191;
-CADROreck = (-1*avgDecay - backgroundOccupied) * 1341.96;
-CADROreckUnoccupied = (-1*avgDecay - background) * 1341.96;
+CADROreck = (-1*oreckK - backgroundOccupied) * 1341.96;
+CADROreckUnoccupied = (-1*oreckK - background) * 1341.96;
 
 %Calculating the averages to export and use in total comparison for both
 %mass and fractional concentrations for both normal and log scale
@@ -183,7 +183,7 @@ stdFracLogOreck = stdFracLog';
 
 durationArrOreck = durationArr;
 
-save('Oreck','averageConcOreck','averageFracOreck','averageConcLogOreck','averageFracLogOreck','stdFracOreck','stdFracLogOreck','durationArrOreck');
+save('Oreck','averageConcOreck','averageFracOreck','averageConcLogOreck','averageFracLogOreck','stdFracOreck','stdFracLogOreck','durationArrOreck','oreckK','oreckStd');
 
 %% Plotting
 

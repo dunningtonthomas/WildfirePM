@@ -144,10 +144,10 @@ decaySlopeFrac2 = coeffFrac2(1);
 decaySlopeFrac3 = coeffFrac3(1);
 
 %Average Slopes
-averageDecayConstSE = mean([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
+seK = mean([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
 
 %Standard Deviation of the slopes
-stdDecayConstSE = std([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
+seStd = std([decaySlopeFrac1, decaySlopeFrac2, decaySlopeFrac3]);
 
 
 %Calculating the averages to export and use in total comparison for both
@@ -162,7 +162,7 @@ averageFracLogSE = (logFrac1 + logFrac2 + logFrac3) / 3;
 stdConcLogSE = (std([logConc1', logConc2', logConc3'], 0, 2))';
 stdFracLogSE = (std([logFrac1', logFrac2', logFrac3'], 0, 2))';
 
-save('SmokeEater', 'averageConcSE', 'averageFracSE', 'stdConcSE', 'stdFracSE', 'averageConcLogSE', 'averageFracLogSE', 'stdConcLogSE', 'stdFracLogSE', 'durationArrSE', 'stdDecayConstSE');
+save('SmokeEater', 'averageConcSE', 'averageFracSE', 'stdConcSE', 'stdFracSE', 'averageConcLogSE', 'averageFracLogSE', 'stdConcLogSE', 'stdFracLogSE', 'durationArrSE', 'seK','seStd');
 
 %% Plotting
 

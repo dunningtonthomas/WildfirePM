@@ -51,9 +51,9 @@ apsScan3 = apsData(:,53:end);
 %Truncating the scans based on start/stop times, WHEN PAC turned on
 scan1Start = datetime(2022, 07, 20, 10, 18, 00);
 
-scan2Start = datetime(2022, 07, 20, 11, 43, 00);
+scan2Start = datetime(2022, 07, 20, 10, 18, 00);
 
-scan3Start = datetime(2022, 07, 20, 13, 08, 00);
+scan3Start = datetime(2022, 07, 19, 14, 18, 00);
 
 tempLog = [smpsScan1{1,:}] >= scan1Start;
 smpsScan1 = smpsScan1(:,tempLog);
@@ -116,7 +116,7 @@ logConc3 = log(totalConc3);
 
 %Calculating the slopes for the log transformed decay curves
 %Creating linear fit curves
-logFit = durationArrSE <= 30; %Linear fit less than 30 mins for the linear region
+logFit = durationArrSE <= 30; %Linear fit less than 30 mins, greater than 6 for linear region
 coeff1 = polyfit(durationArrSE(logFit), logConc1(logFit), 1);
 coeff2 = polyfit(durationArrSE(logFit), logConc2(logFit), 1);
 coeff3 = polyfit(durationArrSE(logFit), logConc3(logFit), 1);
@@ -133,10 +133,10 @@ logFrac2 = log(concPercent2);
 logFrac3 = log(concPercent3);
 
 %Average Slopes
-oraK = mean([decaySlope1, decaySlope2, decaySlope3]);
+averageDecayConstSE = mean([decaySlope1, decaySlope2, decaySlope3]);
 
 %Standard Deviation of the slopes
-oraStd = std([decaySlope1, decaySlope2, decaySlope3]);
+stdDecayConstSE = std([decaySlope1, decaySlope2, decaySlope3]);
 
 
 %Calculating the averages to export and use in total comparison for both
@@ -151,7 +151,7 @@ averageFracLogSE = (logFrac1 + logFrac2 + logFrac3) / 3;
 stdConcLogSE = (std([logConc1', logConc2', logConc3'], 0, 2))';
 stdFracLogSE = (std([logFrac1', logFrac2', logFrac3'], 0, 2))';
 
-save('SmokeEater', 'averageConcSE', 'averageFracSE', 'stdConcSE', 'stdFracSE', 'averageConcLogSE', 'averageFracLogSE', 'stdConcLogSE', 'stdFracLogSE', 'durationArrSE', 'oraStd', 'oraK');
+save('SmokeEater', 'averageConcSE', 'averageFracSE', 'stdConcSE', 'stdFracSE', 'averageConcLogSE', 'averageFracLogSE', 'stdConcLogSE', 'stdFracLogSE', 'durationArrSE', 'stdDecayConstSE');
 
 %% Plotting
 

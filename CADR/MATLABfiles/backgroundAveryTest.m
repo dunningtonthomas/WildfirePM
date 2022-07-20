@@ -179,6 +179,7 @@ decaySlope3 = coeff3(1);
 decaySlope4 = coeff4(1);
 
 avgSlope = mean([decaySlope1, decaySlope2, decaySlope3]);
+stdSlope = std([decaySlope1, decaySlope2, decaySlope3]);
 
 %Calculating the averages to export and use in total comparison for both
 %mass and fractional concentrations for both normal and log scale
@@ -204,7 +205,11 @@ thomasFrac = concPercent4;
 thomasConcLog = logConc4;
 thomasFracLog = logFrac4;
 
-save('AveryThomas', 'averyConc', 'averyFrac', 'averyConcLog', 'averyFracLog', 'averyStdFrac', 'averyStdFracLog','thomasConc','thomasFrac','thomasConcLog','thomasFracLog');
+occupiedK = avgSlope;
+occupiedStd = stdSlope;
+
+
+save('AveryThomas', 'averyConc', 'averyFrac', 'averyConcLog', 'averyFracLog', 'averyStdFrac', 'averyStdFracLog','thomasConc','thomasFrac','thomasConcLog','thomasFracLog','occupiedK','occupiedStd');
 
 %% Plotting
 
