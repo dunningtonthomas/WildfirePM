@@ -68,6 +68,10 @@ oraCFMUp = ((-1)*(oraK + oraStd) - (-1)*(unoccupiedK - unoccupiedStd)) * roomSiz
 oraM = 333;
 seM = 275;
 
+seCFM_Salt = seCFM;
+oreckCFM_Salt = oreckCFM;
+oraCFM_Salt = oraCFM;
+save('CADR_Salt', 'seCFM_Salt', 'oreckCFM_Salt', 'oraCFM_Salt');
 
 %% Plotting
 

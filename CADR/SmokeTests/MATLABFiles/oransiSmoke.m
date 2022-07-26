@@ -95,11 +95,11 @@ totalConc3 = totalConc3(ind3:end);
 
 %Creating plot time based on the length of each trial
 plotTime = [smpsScan1{1,:}]; %Time used to plot
-durationArrSE = minutes(plotTime(ind1:end) - plotTime(1)); %All plots are on 1 hour scale
-durationArrSE = durationArrSE - durationArrSE(1); %Start at t=0 mins
+durationArrORA = minutes(plotTime(ind1:end) - plotTime(1)); %All plots are on 1 hour scale
+durationArrORA = durationArrORA - durationArrORA(1); %Start at t=0 mins
 
 %Truncate duration arr to size of totalConc
-durationArrSE = durationArrSE(1:minsize);
+durationArrORA = durationArrORA(1:minsize);
 
 %Variables for percent plot
 peakConc1 = max(totalConc1);
@@ -116,10 +116,10 @@ logConc3 = log(totalConc3);
 
 %Calculating the slopes for the log transformed decay curves
 %Creating linear fit curves
-logFit = durationArrSE <= 30; %Linear fit less than 30 mins for the linear region
-coeff1 = polyfit(durationArrSE(logFit), logConc1(logFit), 1);
-coeff2 = polyfit(durationArrSE(logFit), logConc2(logFit), 1);
-coeff3 = polyfit(durationArrSE(logFit), logConc3(logFit), 1);
+logFit = durationArrORA <= 30; %Linear fit less than 30 mins for the linear region
+coeff1 = polyfit(durationArrORA(logFit), logConc1(logFit), 1);
+coeff2 = polyfit(durationArrORA(logFit), logConc2(logFit), 1);
+coeff3 = polyfit(durationArrORA(logFit), logConc3(logFit), 1);
 
 %Corresponding slopes
 decaySlope1 = coeff1(1);
@@ -141,27 +141,27 @@ oraStd = std([decaySlope1, decaySlope2, decaySlope3]);
 
 %Calculating the averages to export and use in total comparison for both
 %mass and fractional concentrations for both normal and log scale
-averageConcSE = (totalConc1 + totalConc2 + totalConc3) / 3;
-averageFracSE = (concPercent1 + concPercent2 + concPercent3) / 3;
-stdConcSE = (std([totalConc1', totalConc2', totalConc3'], 0, 2))';
-stdFracSE = (std([concPercent1', concPercent2', concPercent3'], 0, 2))';
+averageConcORA = (totalConc1 + totalConc2 + totalConc3) / 3;
+averageFracORA = (concPercent1 + concPercent2 + concPercent3) / 3;
+stdConcORA = (std([totalConc1', totalConc2', totalConc3'], 0, 2))';
+stdFracORA = (std([concPercent1', concPercent2', concPercent3'], 0, 2))';
 
-averageConcLogSE = (logConc1 + logConc2 + logConc3) / 3;
-averageFracLogSE = (logFrac1 + logFrac2 + logFrac3) / 3;
-stdConcLogSE = (std([logConc1', logConc2', logConc3'], 0, 2))';
-stdFracLogSE = (std([logFrac1', logFrac2', logFrac3'], 0, 2))';
+averageConcLogORA = (logConc1 + logConc2 + logConc3) / 3;
+averageFracLogORA = (logFrac1 + logFrac2 + logFrac3) / 3;
+stdConcLogORA = (std([logConc1', logConc2', logConc3'], 0, 2))';
+stdFracLogORA = (std([logFrac1', logFrac2', logFrac3'], 0, 2))';
 
-save('SmokeEater', 'averageConcSE', 'averageFracSE', 'stdConcSE', 'stdFracSE', 'averageConcLogSE', 'averageFracLogSE', 'stdConcLogSE', 'stdFracLogSE', 'durationArrSE', 'oraStd', 'oraK');
+save('Oransi', 'averageConcORA', 'averageFracORA', 'stdConcORA', 'stdFracORA', 'averageConcLogORA', 'averageFracLogORA', 'stdConcLogORA', 'stdFracLogORA', 'durationArrORA', 'oraStd', 'oraK');
 
 %% Plotting
 
 %Total concentration plot
 figure();
 set(0, 'defaulttextinterpreter', 'latex');
-plot(durationArrSE, totalConc1, 'linewidth', 2, 'color', rgb('light red'));
+plot(durationArrORA, totalConc1, 'linewidth', 2, 'color', rgb('light red'));
 hold on
-plot(durationArrSE, totalConc2, 'linewidth', 2, 'color', rgb('light blue'));
-plot(durationArrSE, totalConc3, 'linewidth', 2, 'color', rgb('light green'));
+plot(durationArrORA, totalConc2, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArrORA, totalConc3, 'linewidth', 2, 'color', rgb('light green'));
 
 xlabel('Time (min)')
 ylabel('$$PM_{2.5}$$ Mass Concentration $$\frac{\mu g}{m^{3}}$$');
@@ -170,10 +170,10 @@ legend('Trial 1', 'Trial 2', 'Trial 3');
 
 %Percentage plot
 figure();
-plot(durationArrSE, concPercent1, 'linewidth', 2, 'color', rgb('light red'));
+plot(durationArrORA, concPercent1, 'linewidth', 2, 'color', rgb('light red'));
 hold on
-plot(durationArrSE, concPercent2, 'linewidth', 2, 'color', rgb('light blue'));
-plot(durationArrSE, concPercent3, 'linewidth', 2, 'color', rgb('light green'));
+plot(durationArrORA, concPercent2, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArrORA, concPercent3, 'linewidth', 2, 'color', rgb('light green'));
 
 ylim([0 1])
 xlabel('Time (min)')
@@ -184,10 +184,10 @@ legend('Trial 1', 'Trial 2', 'Trial 3');
 
 %Log Scale Plot Concentration
 figure();
-plot(durationArrSE, logConc1, 'linewidth', 2, 'color', rgb('light red'));
+plot(durationArrORA, logConc1, 'linewidth', 2, 'color', rgb('light red'));
 hold on
-plot(durationArrSE, logConc2, 'linewidth', 2, 'color', rgb('light blue'));
-plot(durationArrSE, logConc3, 'linewidth', 2, 'color', rgb('light green'));
+plot(durationArrORA, logConc2, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArrORA, logConc3, 'linewidth', 2, 'color', rgb('light green'));
 
 xlabel('Time (min)')
 ylabel('$$PM_{2.5}$$ Logarithmic Mass Concentration $$\ln (\frac{\mu g}{m^{3}})$$');
@@ -196,10 +196,10 @@ legend('Trial 1', 'Trial 2', 'Trial 3');
 
 %Log Scale Plot Fractional
 figure();
-plot(durationArrSE, logFrac1, 'linewidth', 2, 'color', rgb('light red'));
+plot(durationArrORA, logFrac1, 'linewidth', 2, 'color', rgb('light red'));
 hold on
-plot(durationArrSE, logFrac2, 'linewidth', 2, 'color', rgb('light blue'));
-plot(durationArrSE, logFrac3, 'linewidth', 2, 'color', rgb('light green'));
+plot(durationArrORA, logFrac2, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArrORA, logFrac3, 'linewidth', 2, 'color', rgb('light green'));
 
 xlabel('Time (min)')
 ylabel('$$PM_{2.5}$$ Logarithmic Fraction Remaining $$\ln (\frac{PM_{2.5}}{PM_{2.5_{0}}})$$');

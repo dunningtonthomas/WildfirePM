@@ -4,12 +4,13 @@ clear; clc; close all;
 %% Import Data
 
 %SMPS import
-pathSMPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\WildfirePM\CADR\SmokeTests\data\Oransi\SMPS';
+pathSMPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\WildfirePM\CADR\SmokeTests\data\Oreck\SMPS';
 smpsData = importSMPS(pathSMPS);
 smpsDataRaw = smpsData;
 
+
 %APS import
-pathAPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\WildfirePM\CADR\SmokeTests\data\Oransi\APS';
+pathAPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\WildfirePM\WildfirePM\CADR\SmokeTests\data\Oreck\APS';
 apsData = importAPS(pathAPS);
 apsDataRaw = apsData;
 
@@ -40,20 +41,21 @@ end
 
 %Computing Average if there are more than 1 scans (3 scans in our case)
 scanIndices = [26, 26, 26]; %The number of scans for each file SCAN1 SCAN2 SCAN3 respectively
-smpsScan1 = smpsData(:,1:26);
-smpsScan2 = smpsData(:,27:52);
-smpsScan3 = smpsData(:,53:end);
+smpsScan1 = smpsData(:,1:27);
+smpsScan2 = smpsData(:,28:54);
+smpsScan3 = smpsData(:,55:end);
 
-apsScan1 = apsData(:,1:26);
-apsScan2 = apsData(:,27:52);
-apsScan3 = apsData(:,53:end);
+apsScan1 = apsData(:,1:27);
+apsScan2 = apsData(:,28:54);
+apsScan3 = apsData(:,55:end);
 
-%Truncating the scans based on start/stop times, WHEN PAC turned on
-scan1Start = datetime(2022, 07, 20, 10, 18, 00);
+%Truncating the scans based on start/stop times
+%Begin when nebulizer is turned off and go to the end
+scan1Start = datetime(2022, 07, 26, 11, 33, 00);
 
-scan2Start = datetime(2022, 07, 20, 10, 18, 00);
+scan2Start = datetime(2022, 07, 26, 13, 03, 00);
 
-scan3Start = datetime(2022, 07, 19, 14, 18, 00);
+scan3Start = datetime(2022, 07, 26, 14, 38, 00);
 
 tempLog = [smpsScan1{1,:}] >= scan1Start;
 smpsScan1 = smpsScan1(:,tempLog);
@@ -93,13 +95,33 @@ totalConc2 = totalConc2(ind2:end);
 [~,ind3] = max(totalConc3);
 totalConc3 = totalConc3(ind3:end);
 
+%Truncating again to minimum size
+minsize = min([length(totalConc1),length(totalConc2),length(totalConc3)]);
+totalConc1 = totalConc1(1:minsize);
+totalConc2 = totalConc2(1:minsize);
+totalConc3 = totalConc3(1:minsize);
+
+
 %Creating plot time based on the length of each trial
 plotTime = [smpsScan1{1,:}]; %Time used to plot
-durationArrSE = minutes(plotTime(ind1:end) - plotTime(1)); %All plots are on 1 hour scale
-durationArrSE = durationArrSE - durationArrSE(1); %Start at t=0 mins
+durationArr = minutes(plotTime(ind1:end) - plotTime(1)); %All plots are on 1 hour scale
+durationArr = durationArr - durationArr(1); %Start at t=0 mins
 
 %Truncate duration arr to size of totalConc
-durationArrSE = durationArrSE(1:minsize);
+durationArr = durationArr(1:minsize);
+
+%Truncating based on the size of the duration array
+if(length(totalConc1) ~= length(durationArr))
+    totalConc1 = totalConc1(1:length(durationArr));
+end
+
+if(length(totalConc2) ~= length(durationArr))
+    totalConc2 = totalConc2(1:length(durationArr));
+end
+
+if(length(totalConc3) ~= length(durationArr))
+    totalConc3 = totalConc3(1:length(durationArr));
+end
 
 %Variables for percent plot
 peakConc1 = max(totalConc1);
@@ -114,54 +136,58 @@ logConc1 = log(totalConc1);
 logConc2 = log(totalConc2);
 logConc3 = log(totalConc3);
 
+logFrac1 = log(concPercent1);
+logFrac2 = log(concPercent2);
+logFrac3 = log(concPercent3);
+
 %Calculating the slopes for the log transformed decay curves
-%Creating linear fit curves
-logFit = durationArrSE <= 30; %Linear fit less than 30 mins, greater than 6 for linear region
-coeff1 = polyfit(durationArrSE(logFit), logConc1(logFit), 1);
-coeff2 = polyfit(durationArrSE(logFit), logConc2(logFit), 1);
-coeff3 = polyfit(durationArrSE(logFit), logConc3(logFit), 1);
+%Creating linear fit curves, truncating to half of the time for the PAC's
+%because most particles are gone after 30 minutes
+tempLog = durationArr <= 30;
+coeff1 = polyfit(durationArr(tempLog), logConc1(tempLog), 1);
+coeff2 = polyfit(durationArr(tempLog), logConc2(tempLog), 1);
+coeff3 = polyfit(durationArr(tempLog), logConc3(tempLog), 1);
 
 %Corresponding slopes
 decaySlope1 = coeff1(1);
 decaySlope2 = coeff2(1);
 decaySlope3 = coeff3(1);
 
-%Testing log transform on the percent remaning rather than the total
-%concentrations
-logFrac1 = log(concPercent1);
-logFrac2 = log(concPercent2);
-logFrac3 = log(concPercent3);
-
-%Average Slopes
-averageDecayConstSE = mean([decaySlope1, decaySlope2, decaySlope3]);
-
-%Standard Deviation of the slopes
-stdDecayConstSE = std([decaySlope1, decaySlope2, decaySlope3]);
-
+oreckK = (decaySlope1 + decaySlope2 + decaySlope3) / 3;
+oreckStd = std([decaySlope1, decaySlope2, decaySlope3]);
 
 %Calculating the averages to export and use in total comparison for both
 %mass and fractional concentrations for both normal and log scale
-averageConcSE = (totalConc1 + totalConc2 + totalConc3) / 3;
-averageFracSE = (concPercent1 + concPercent2 + concPercent3) / 3;
-stdConcSE = (std([totalConc1', totalConc2', totalConc3'], 0, 2))';
-stdFracSE = (std([concPercent1', concPercent2', concPercent3'], 0, 2))';
+averageConc = (totalConc1 + totalConc2 + totalConc3) / 3;
+averageFrac = (concPercent1 + concPercent2 + concPercent3) / 3;
+stdConc = std([totalConc1', totalConc2', totalConc3'], 0, 2);
+stdFrac = std([concPercent1', concPercent2', concPercent3'], 0, 2);
 
-averageConcLogSE = (logConc1 + logConc2 + logConc3) / 3;
-averageFracLogSE = (logFrac1 + logFrac2 + logFrac3) / 3;
-stdConcLogSE = (std([logConc1', logConc2', logConc3'], 0, 2))';
-stdFracLogSE = (std([logFrac1', logFrac2', logFrac3'], 0, 2))';
+averageConcLog = (logConc1 + logConc2 + logConc3) / 3;
+averageFracLog = (logFrac1 + logFrac2 + logFrac3) / 3;
+stdConcLog = std([logConc1', logConc2', logConc3'], 0, 2);
+stdFracLog = std([logFrac1', logFrac2', logFrac3'], 0, 2);
 
-save('SmokeEater', 'averageConcSE', 'averageFracSE', 'stdConcSE', 'stdFracSE', 'averageConcLogSE', 'averageFracLogSE', 'stdConcLogSE', 'stdFracLogSE', 'durationArrSE', 'stdDecayConstSE');
+averageConcOreck = averageConc;
+averageFracOreck = averageFrac;
+averageConcLogOreck = averageConcLog;
+averageFracLogOreck = averageFracLog;
+stdFracOreck = stdFrac';
+stdFracLogOreck = stdFracLog';
+
+durationArrOreck = durationArr;
+
+save('Oreck','averageConcOreck','averageFracOreck','averageConcLogOreck','averageFracLogOreck','stdFracOreck','stdFracLogOreck','durationArrOreck','oreckK','oreckStd');
 
 %% Plotting
 
 %Total concentration plot
 figure();
 set(0, 'defaulttextinterpreter', 'latex');
-plot(durationArrSE, totalConc1, 'linewidth', 2, 'color', rgb('light red'));
+plot(durationArr, totalConc1, 'linewidth', 2, 'color', rgb('light red'));
 hold on
-plot(durationArrSE, totalConc2, 'linewidth', 2, 'color', rgb('light blue'));
-plot(durationArrSE, totalConc3, 'linewidth', 2, 'color', rgb('light green'));
+plot(durationArr, totalConc2, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArr, totalConc3, 'linewidth', 2, 'color', rgb('light green'));
 
 xlabel('Time (min)')
 ylabel('$$PM_{2.5}$$ Mass Concentration $$\frac{\mu g}{m^{3}}$$');
@@ -170,10 +196,11 @@ legend('Trial 1', 'Trial 2', 'Trial 3');
 
 %Percentage plot
 figure();
-plot(durationArrSE, concPercent1, 'linewidth', 2, 'color', rgb('light red'));
+plot(durationArr, concPercent1, 'linewidth', 2, 'color', rgb('light red'));
 hold on
-plot(durationArrSE, concPercent2, 'linewidth', 2, 'color', rgb('light blue'));
-plot(durationArrSE, concPercent3, 'linewidth', 2, 'color', rgb('light green'));
+plot(durationArr, concPercent2, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArr, concPercent3, 'linewidth', 2, 'color', rgb('light green'));
+
 
 ylim([0 1])
 xlabel('Time (min)')
@@ -184,10 +211,10 @@ legend('Trial 1', 'Trial 2', 'Trial 3');
 
 %Log Scale Plot Concentration
 figure();
-plot(durationArrSE, logConc1, 'linewidth', 2, 'color', rgb('light red'));
+plot(durationArr, logConc1, 'linewidth', 2, 'color', rgb('light red'));
 hold on
-plot(durationArrSE, logConc2, 'linewidth', 2, 'color', rgb('light blue'));
-plot(durationArrSE, logConc3, 'linewidth', 2, 'color', rgb('light green'));
+plot(durationArr, logConc2, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArr, logConc3, 'linewidth', 2, 'color', rgb('light green'));
 
 xlabel('Time (min)')
 ylabel('$$PM_{2.5}$$ Logarithmic Mass Concentration $$\ln (\frac{\mu g}{m^{3}})$$');
@@ -196,10 +223,10 @@ legend('Trial 1', 'Trial 2', 'Trial 3');
 
 %Log Scale Plot Fractional
 figure();
-plot(durationArrSE, logFrac1, 'linewidth', 2, 'color', rgb('light red'));
+plot(durationArr, logFrac1, 'linewidth', 2, 'color', rgb('light red'));
 hold on
-plot(durationArrSE, logFrac2, 'linewidth', 2, 'color', rgb('light blue'));
-plot(durationArrSE, logFrac3, 'linewidth', 2, 'color', rgb('light green'));
+plot(durationArr, logFrac2, 'linewidth', 2, 'color', rgb('light blue'));
+plot(durationArr, logFrac3, 'linewidth', 2, 'color', rgb('light green'));
 
 xlabel('Time (min)')
 ylabel('$$PM_{2.5}$$ Logarithmic Fraction Remaining $$\ln (\frac{PM_{2.5}}{PM_{2.5_{0}}})$$');

@@ -6,7 +6,7 @@ clear; close all; clc;
 load('Background.mat'); %Background trials
 load('SmokeEater.mat'); %Smoke Eater Trials
 load('Oransi.mat');
-load('AveryThomas.mat');
+load('BackgroundOccupied.mat');
 load('Oreck.mat');
 
 %% Analysis
@@ -16,8 +16,8 @@ load('Oreck.mat');
 backgroundUp = averageFrac + stdFrac;
 backgroundLow = averageFrac - stdFrac;
 
-averyUp = averyFrac + averyStdFrac;
-averyLow = averyFrac - averyStdFrac;
+occupiedUp = occupiedFrac + occupiedFracStd;
+occupiedLow = occupiedFrac - occupiedFracStd;
 
 SEUp = averageFracSE + stdFracSE;
 SELow = averageFracSE - stdFracSE;
@@ -31,9 +31,6 @@ oreckLow = averageFracOreck - stdFracOreck;
 %Log std
 backgroundUpLog = averageFracLog + stdFracLog;
 backgroundLowLog = averageFracLog - stdFracLog;
-
-averyUpLog = averyFracLog + averyStdFracLog;
-averyLowLog = averyFracLog - averyStdFracLog;
 
 SEUpLog = averageFracLogSE + stdFracLogSE;
 SELowLog = averageFracLogSE - stdFracLogSE;
@@ -68,6 +65,11 @@ oraCFMUp = ((-1)*(oraK + oraStd) - (-1)*(unoccupiedK - unoccupiedStd)) * roomSiz
 oraM = 333;
 seM = 275;
 
+seCFM_Smoke = seCFM;
+oreckCFM_Smoke = oreckCFM;
+oraCFM_Smoke = oraCFM;
+save('CADR_Smoke', 'seCFM_Smoke', 'oreckCFM_Smoke', 'oraCFM_Smoke');
+
 
 %% Plotting
 
@@ -79,7 +81,6 @@ hold on
 plot(durationArrSE, averageFracSE, 'linewidth', 2, 'color', rgb('light blue'));
 plot(durationArrOreck, averageFracOreck, 'linewidth', 2, 'color', rgb('light orange'));
 plot(durationArrORA, averageFracORA, 'linewidth', 2, 'color', rgb('light purple'));
-
 
 %Plotting the Standard Deviation Background
 h3 = fill([durationArr, flip(durationArr)], [(backgroundUp), flip(backgroundLow)], rgb('tea green'), 'HandleVisibility', 'off');
@@ -101,7 +102,6 @@ h3 = fill([durationArrOreck, flip(durationArrOreck)], [oreckUp, flip(oreckLow)],
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
-
 ylim([0 1])
 xlabel('Time $$(min)$$')
 ylabel('$$PM_{2.5}$$ Fraction $$(\frac{PM_{2.5}}{PM_{2.5_{0}}})$$');
@@ -116,7 +116,6 @@ hold on
 plot(durationArrSE, averageFracLogSE, 'linewidth', 2, 'color', rgb('light blue'));
 plot(durationArrOreck, averageFracLogOreck, 'linewidth', 2, 'color', rgb('light orange'));
 plot(durationArrORA, averageFracLogORA, 'linewidth', 2, 'color', rgb('light purple'));
-
 
 %Plotting the Standard Deviation Background
 h3 = fill([durationArr, flip(durationArr)], [(backgroundUpLog), flip(backgroundLowLog)], rgb('tea green'), 'HandleVisibility', 'off');
@@ -138,8 +137,6 @@ h3 = fill([durationArrOreck, flip(durationArrOreck)], [oreckUpLog, flip(oreckLow
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
-
-
 xlabel('Time $$(min)$$')
 ylabel('$$PM_{2.5}$$ Logarithmic Fraction Remaining $$\ln (\frac{PM_{2.5}}{PM_{2.5_{0}}})$$');
 title('Natural Log Transform of First Order Decay');
@@ -156,23 +153,20 @@ h3 = fill([durationArr, flip(durationArr)], [(backgroundUp), flip(backgroundLow)
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
-
 %Plotting the 5% error region
 plot(durationArr, 1.05*averageFrac, 'linestyle', '--', 'color', rgb('green'));
 
 %Avery Inside Average of 3 trials
-plot(durationArr, averyFrac, 'linewidth', 2, 'color', rgb('darkish pink'));
+plot(durationArr, occupiedFrac(1:length(durationArr)), 'linewidth', 2, 'color', rgb('darkish pink'));
 
 %Avery Inside Standard Deviation
-h3 = fill([durationArr, flip(durationArr)], [(averyUp), flip(averyLow)], rgb('light pink'), 'HandleVisibility', 'off');
+h3 = fill([durationArr, flip(durationArr)], [(occupiedUp(1:length(durationArr))), flip(occupiedLow(1:length(durationArr)))], rgb('light pink'), 'HandleVisibility', 'off');
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
-
 
 %5% error region, after everything so we do not have to include a legend
 %entry for it
 plot(durationArr, 0.95*averageFrac, 'linestyle', '--', 'color', rgb('green'));
-
 
 ylim([0 1])
 xlabel('Time $$(min)$$')
@@ -181,43 +175,6 @@ title('Fraction Remaining');
 legend('Unoccupied Deposition', '5% Error Region', 'Occupied Deposition');
 
 
-
-%Comparing Control Triplicate to Avery Intervention Natural Log Transform
-figure();
-plot(durationArr, averageFracLog, 'linewidth', 2, 'color', rgb('green'));
-hold on
-
-%Plotting the Standard Deviation Background
-h3 = fill([durationArr, flip(durationArr)], [(backgroundUpLog), flip(backgroundLowLog)], rgb('tea green'), 'HandleVisibility', 'off');
-set(h3,'facealpha',0.5) %Makes the shading see-though
-h3.LineStyle = 'none'; %Turn off outline
-
-
-
-%Plotting the 5% error region
-plot(durationArr, 1.05*averageFracLog, 'linestyle', '--', 'color', rgb('green'));
-
-%Avery Inside
-plot(durationArr, averyFracLog, 'linewidth', 2, 'color', rgb('darkish pink'));
-
-%Avery Inside Standard Deviation
-h3 = fill([durationArr, flip(durationArr)], [(averyUpLog), flip(averyLowLog)], rgb('light pink'), 'HandleVisibility', 'off');
-set(h3,'facealpha',0.5) %Makes the shading see-though
-h3.LineStyle = 'none'; %Turn off outline
-
-xTemp = [0 0 0 0];
-yTemp = [-1 -1 -1 -1];
-patch(xTemp, yTemp, rgb('light pink'));
-
-%5% error region
-plot(durationArr, 0.95*averageFracLog, 'linestyle', '--', 'color', rgb('green'));
-
-
-xlabel('Time $$(min)$$')
-ylabel('$$PM_{2.5}$$ Logarithmic Fraction Remaining $$\ln (\frac{PM_{2.5}}{PM_{2.5_{0}}})$$');
-title('Natural Log Transform of First Order Decay');
-legend('No Intervention', 'Standard Deviation', 'Error Region', 'Occupied', 'Standard Deviation');
-
 % Making CFM Plot
 figure();
 xStrings = ["Oransi", "Oreck", "Smoke Eater"];
@@ -225,13 +182,15 @@ plotX = categorical(xStrings);
 yValues = [oraCFM, oreckCFM, seCFM];
 colors = {rgb('light blue'), rgb('light purple'), rgb('light orange')};
 
-scatter(plotX(1), oraM, 150, '.', 'MarkerEdgeColor', rgb('light blue'), 'linewidth', 1.25)
+scatter(plotX(1), 0, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k');
 hold on
-scatter(plotX(1), 0, '*', 'MarkerEdgeColor', 'k');
-scatter(plotX(3), seM, 150, '.', 'MarkerEdgeColor', rgb(', 'linewidth', 1.25)
+scatter(plotX(1), 0, 's', 'MarkerEdgeColor', 'k');
+scatter(plotX(1), oraM, 70, 'o', 'MarkerFaceColor', rgb('light blue'), 'MarkerEdgeColor', rgb('light blue'), 'linewidth', 1.25)
+scatter(plotX(3), seM, 70, 'o', 'MarkerFaceColor', rgb('light orange'), 'MarkerEdgeColor', rgb('light orange'), 'linewidth', 1.25)
 h1 = scatter(plotX(1), yValues(1), 100, 's', 'MarkerEdgeColor', colors{1}, 'linewidth', 1.25);
 h2 = scatter(plotX(2), yValues(2), 100, 's', 'MarkerEdgeColor', colors{2}, 'linewidth', 1.25);
 h3 = scatter(plotX(3), yValues(3), 100, 's', 'MarkerEdgeColor', colors{3}, 'linewidth', 1.25);
+set(gca, 'ticklabelinterpreter', 'latex');
 
 %Error Bars
 yneg = [oraCFMLow, oreckCFMLow, seCFMLow];
@@ -243,6 +202,6 @@ errorbar(plotX(3), yValues(3), yValues(3)-yneg(3), ypos(3)-yValues(3), 'color', 
 ylim([90,350]);
 ylabel('CADR $$(cfm)$$');
 title('Clean Air Delivery Rates');
-legend('Manufacturer Reported', 'Experimentally Determined');
+legend('Manufacturer Reported', 'Experimentally Determined', 'interpreter', 'latex');
 
 

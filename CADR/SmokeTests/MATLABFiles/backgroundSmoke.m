@@ -196,7 +196,7 @@ averageFracLog = (logFrac1 + logFrac2 + logFrac3) / 3;
 stdConcLog = (std([logConc1', logConc2', logConc3'], 0, 2))';
 stdFracLog = (std([logFrac1', logFrac2', logFrac3'], 0, 2))';
 
-save('Background', 'averageConc', 'averageFrac', 'stdConc', 'stdFrac', 'averageConcLog', 'averageFracLog', 'stdConcLog', 'stdFracLog', 'durationArr','stdDecayConstBackground');
+%save('Background', 'averageConc', 'averageFrac', 'stdConc', 'stdFrac', 'averageConcLog', 'averageFracLog', 'stdConcLog', 'stdFracLog', 'durationArr','stdDecayConstBackground');
 
 %% Plotting
 set(0, 'defaulttextinterpreter', 'latex');
