@@ -14,16 +14,16 @@ yValues = [oraCFM_Smoke, oreckCFM_Smoke, seCFM_Smoke];
 colors = {rgb('light blue'), rgb('light purple'), rgb('light orange')};
 
 %These are for the legends
-scatter(plotX(1), 0, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k');
-hold on
 scatter(plotX(1), 0, 's', 'MarkerEdgeColor', 'k');
+hold on
+scatter(plotX(1), 0, '*', 'MarkerEdgeColor', 'k');
 
-scatter(plotX(1), oraCFM_Salt, 30, 'o', 'MarkerFaceColor', rgb('light blue'), 'MarkerEdgeColor', rgb('light blue'), 'linewidth', 1.25);
-scatter(plotX(2), oreckCFM_Salt, 30, 'o', 'MarkerFaceColor', rgb('light purple'), 'MarkerEdgeColor', rgb('light purple'), 'linewidth', 1.25);
-scatter(plotX(3), seCFM_Salt, 30, 'o', 'MarkerFaceColor', rgb('light orange'), 'MarkerEdgeColor', rgb('light orange'), 'linewidth', 1.25);
-h1 = scatter(plotX(1), yValues(1), 50, 's', 'MarkerEdgeColor', colors{1}, 'linewidth', 1.25);
-h2 = scatter(plotX(2), yValues(2), 50, 's', 'MarkerEdgeColor', colors{2}, 'linewidth', 1.25);
-h3 = scatter(plotX(3), yValues(3), 50, 's', 'MarkerEdgeColor', colors{3}, 'linewidth', 1.25);
+scatter(plotX(1), oraCFM_Salt, 30, 's', 'MarkerEdgeColor', rgb('light blue'), 'linewidth', 1.25);
+scatter(plotX(2), oreckCFM_Salt, 30, 's', 'MarkerEdgeColor', rgb('light purple'), 'linewidth', 1.25);
+scatter(plotX(3), seCFM_Salt, 30, 's', 'MarkerEdgeColor', rgb('light orange'), 'linewidth', 1.25);
+h1 = scatter(plotX(1), yValues(1), 50, '*', 'MarkerEdgeColor', colors{1}, 'linewidth', 1.25);
+h2 = scatter(plotX(2), yValues(2), 50, '*', 'MarkerEdgeColor', colors{2}, 'linewidth', 1.25);
+h3 = scatter(plotX(3), yValues(3), 50, '*', 'MarkerEdgeColor', colors{3}, 'linewidth', 1.25);
 set(gca, 'ticklabelinterpreter', 'latex');
 
 %Error Bars

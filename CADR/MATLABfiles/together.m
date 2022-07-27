@@ -80,9 +80,9 @@ set(0, 'defaulttextinterpreter', 'latex');
 figure();
 plot(durationArr, averageFrac, 'linewidth', 2, 'color', rgb('green'));
 hold on
-plot(durationArrSE, averageFracSE, 'linewidth', 2, 'color', rgb('light blue'));
-plot(durationArrOreck, averageFracOreck, 'linewidth', 2, 'color', rgb('light orange'));
-plot(durationArrORA, averageFracORA, 'linewidth', 2, 'color', rgb('light purple'));
+plot(durationArrSE, averageFracSE, 'linewidth', 2, 'color', rgb('light orange'));
+plot(durationArrOreck, averageFracOreck, 'linewidth', 2, 'color', rgb('light purple'));
+plot(durationArrORA, averageFracORA, 'linewidth', 2, 'color', rgb('light blue'));
 
 
 %Plotting the Standard Deviation Background
@@ -91,17 +91,17 @@ set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
 %Plotting the Standard Deviation Smoke Eater
-h3 = fill([durationArrSE, flip(durationArrSE)], [SEUp, flip(SELow)], rgb('light blue'), 'HandleVisibility', 'off');
+h3 = fill([durationArrSE, flip(durationArrSE)], [SEUp, flip(SELow)], rgb('light orange'), 'HandleVisibility', 'off');
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
 %Plotting the Standard Deviation Oransi
-h3 = fill([durationArrORA, flip(durationArrORA)], [ORAUp, flip(ORALow)], rgb('light purple'), 'HandleVisibility', 'off');
+h3 = fill([durationArrORA, flip(durationArrORA)], [ORAUp, flip(ORALow)], rgb('light blue'), 'HandleVisibility', 'off');
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
 %Plotting the Standard Deviation Oreck
-h3 = fill([durationArrOreck, flip(durationArrOreck)], [oreckUp, flip(oreckLow)], rgb('light orange'), 'HandleVisibility', 'off');
+h3 = fill([durationArrOreck, flip(durationArrOreck)], [oreckUp, flip(oreckLow)], rgb('light purple'), 'HandleVisibility', 'off');
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
@@ -117,9 +117,9 @@ legend('No Intervention', 'Smoke Eater', 'Oreck', 'Oransi');
 figure();
 plot(durationArr, averageFracLog, 'linewidth', 2, 'color', rgb('green'));
 hold on
-plot(durationArrSE, averageFracLogSE, 'linewidth', 2, 'color', rgb('light blue'));
-plot(durationArrOreck, averageFracLogOreck, 'linewidth', 2, 'color', rgb('light orange'));
-plot(durationArrORA, averageFracLogORA, 'linewidth', 2, 'color', rgb('light purple'));
+plot(durationArrSE, averageFracLogSE, 'linewidth', 2, 'color', rgb('light orange'));
+plot(durationArrOreck, averageFracLogOreck, 'linewidth', 2, 'color', rgb('light purple'));
+plot(durationArrORA, averageFracLogORA, 'linewidth', 2, 'color', rgb('light blue'));
 
 
 %Plotting the Standard Deviation Background
@@ -128,17 +128,17 @@ set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
 %Plotting the Standard Deviation Smoke Eater
-h3 = fill([durationArrSE, flip(durationArrSE)], [SEUpLog, flip(SELowLog)], rgb('light blue'), 'HandleVisibility', 'off');
+h3 = fill([durationArrSE, flip(durationArrSE)], [SEUpLog, flip(SELowLog)], rgb('light orange'), 'HandleVisibility', 'off');
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
 %Plotting the Standard Deviation Oransi
-h3 = fill([durationArrORA, flip(durationArrORA)], [ORAUpLog, flip(ORALowLog)], rgb('light purple'), 'HandleVisibility', 'off');
+h3 = fill([durationArrORA, flip(durationArrORA)], [ORAUpLog, flip(ORALowLog)], rgb('light blue'), 'HandleVisibility', 'off');
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
 %Plotting the Standard Deviation Oreck
-h3 = fill([durationArrOreck, flip(durationArrOreck)], [oreckUpLog, flip(oreckLowLog)], rgb('light orange'), 'HandleVisibility', 'off');
+h3 = fill([durationArrOreck, flip(durationArrOreck)], [oreckUpLog, flip(oreckLowLog)], rgb('light purple'), 'HandleVisibility', 'off');
 set(h3,'facealpha',0.5) %Makes the shading see-though
 h3.LineStyle = 'none'; %Turn off outline
 
